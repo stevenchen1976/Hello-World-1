@@ -17,6 +17,14 @@ struct MainWindow : wtl::WindowBase<wtl::Encoding::UTF16>
   
   //! \alias base - Define base type
   using base = wtl::WindowBase<wtl::Encoding::UTF16>;
+
+  //! \enum ControlId - Define control Ids
+  enum struct ControlId : int16
+  {
+    First = int16(wtl::WindowId::User),
+
+    Goodbye = First+1,    //!< Exit button
+  };
   
   // --------------------- CONSTRUCTION ----------------------
   
@@ -26,7 +34,7 @@ struct MainWindow : wtl::WindowBase<wtl::Encoding::UTF16>
   //! 
   //! \param[in] instance - Module handle
   ///////////////////////////////////////////////////////////////////////////////
-  MainWindow(HINSTANCE instance) : base(getClass(instance)), TestBtn(instance)
+  MainWindow(HINSTANCE instance) : base(getClass(instance)), ExitBtn(instance)
   {
     *this += new wtl::CreateWindowEventHandler<encoding>( this, &MainWindow::onCreate );
     *this += new wtl::DestroyWindowEventHandler<encoding>( this, &MainWindow::onDestroy );
@@ -73,14 +81,14 @@ protected:
   ///////////////////////////////////////////////////////////////////////////////
   wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) 
   { 
-    // Create child
-    TestBtn.create(base::Class.Instance, 
-                   wtl::enum_cast<wtl::WindowId>(0x0001), 
-                   wtl::WindowStyle::Child|wtl::WindowStyle::Border|wtl::WindowStyle::Visible | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify, 
-                   wtl::enum_cast<wtl::WindowStyleEx>(0), 
-                   wtl::cstr(L"Goodbye!"), 
+    // Create button
+    ExitBtn.create(*this, 
+                   wtl::c_arr(L"Goodbye!"), 
                    wtl::RectL(500,50,600,100), 
-                   this);
+                   ControlId::Goodbye, 
+                   wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify);
+
+    ExitBtn.show(wtl::ShowWindowFlags::Show);
 
     // Handled
     return 0; 
@@ -111,7 +119,7 @@ protected:
   wtl::LResult  onDestroy() 
   { 
     // Destroy children
-    TestBtn.destroy();
+    ExitBtn.destroy();
 
     // Close program
     post(wtl::WindowMessage::QUIT);
@@ -315,7 +323,7 @@ private:
   void  drawSign(wtl::DeviceContext& dc, wtl::PointL& pt, bool erase)
   {
     // Large text
-    static const wtl::HFont largeFont = wtl::ScreenDC.getFont(wtl::cstr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
+    static const wtl::HFont largeFont = wtl::ScreenDC.getFont(wtl::c_arr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
     dc += largeFont;
 
     // [SIGN] Black outline + brown interior
@@ -343,10 +351,10 @@ private:
     dc.setTextColour(wtl::Colour::White);
     
     // [TEXT] Draw sign text
-    dc.write(wtl::cstr("Hi Mum! Hi Dad!" "\n\n" 
-                       "I love you"      "\n\n" 
-                       "Happy Easter!"   "\n\n"
-                       "From Nick"), signRect, wtl::DrawTextFlags::Centre); 
+    dc.write(wtl::c_arr("Hi Mum! Hi Dad!" "\n\n" 
+                        "I love you"      "\n\n" 
+                        "Happy Easter!"   "\n\n"
+                        "From Nick"), signRect, wtl::DrawTextFlags::Centre); 
 
     // Cleanup
     dc.clear();
@@ -354,7 +362,7 @@ private:
 
   // -------------------- REPRESENTATION ---------------------
 
-  wtl::Button<encoding>  TestBtn;    //!< Child control
+  wtl::Button<encoding>  ExitBtn;    //!< Child control
 };
 
 

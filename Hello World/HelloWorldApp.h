@@ -48,7 +48,7 @@ protected:
     static const wchar_t     title[] = L"Hello World";  //!< Window title
 
     // Create window
-    Window.create(Instance, wtl::WindowStyle::OverlappedWindow, wtl::zero<wtl::WindowStyleEx>::value, wtl::cstr(L"Hello World"), wtl::RectL(initial,size), nullptr, nullptr);
+    Window.createEx(nullptr, wtl::c_arr(L"Hello World"), wtl::RectL(initial,size), wtl::WindowStyle::OverlappedWindow, wtl::WindowStyleEx::None, nullptr);
   }
 
   // -------------------- REPRESENTATION ---------------------
