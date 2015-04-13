@@ -11,13 +11,16 @@
 #include "wtl/WTL.hpp"    // Windows Template Library
 #include "MainWindow.h"   // Main window
 
-//! \struct HelloWorldApp - Hello world
-struct HelloWorldApp : wtl::MessageThread<wtl::Encoding::UTF16, MainWindow>
+///////////////////////////////////////////////////////////////////////////////
+//! \struct HelloWorldApp - Encapsulates an instance of the application
+///////////////////////////////////////////////////////////////////////////////
+template <wtl::Encoding ENC = wtl::Encoding::UTF16>
+struct HelloWorldApp : wtl::MessageThread<ENC, MainWindow<ENC>>
 {
   // ------------------------ TYPES --------------------------
 
   //! \alias base - Define base type
-  using base = wtl::MessageThread<wtl::Encoding::UTF16, MainWindow>;
+  using base = wtl::MessageThread<ENC, MainWindow<ENC>>;
 
   // --------------------- CONSTRUCTION ----------------------
 
@@ -29,6 +32,18 @@ struct HelloWorldApp : wtl::MessageThread<wtl::Encoding::UTF16, MainWindow>
   ///////////////////////////////////////////////////////////////////////////////
   HelloWorldApp(HINSTANCE instance) : base(instance)
   {
+    /*wtl::CommandGroup file("File");
+    
+    file += wtl::Command(ID_FILE_OPEN, OpenDocumentCommand);
+    file += wtl::NewDocumentCommand();
+    file += wtl::OpenDocumentCommand();
+    file += wtl::CloseDocumentCommand();
+    file += wtl::ExitProgramCommand();
+
+    wtl::CommandGroups += file;
+    wtl::CommandGroups += edit;
+    wtl::CommandGroups += view;
+    wtl::CommandGroups += help;*/
   }
 
   // ---------------------- ACCESSORS ------------------------
@@ -53,6 +68,9 @@ protected:
 
   // -------------------- REPRESENTATION ---------------------
 };
+
+//! \alias application_t - Define application type according to project settings
+using application_t = HelloWorldApp<wtl::default_encoding<TCHAR>::value>;
 
 #endif
 

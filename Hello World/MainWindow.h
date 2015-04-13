@@ -11,7 +11,8 @@
 #include "wtl/WTL.hpp"   // Windows Template Library
 
 //! \struct MainWindow - Main window class
-struct MainWindow : wtl::WindowBase<wtl::Encoding::UTF16>
+template <wtl::Encoding ENC = wtl::Encoding::UTF16>
+struct MainWindow : wtl::WindowBase<ENC>
 {
   // ------------------------ TYPES --------------------------
   
@@ -40,6 +41,7 @@ struct MainWindow : wtl::WindowBase<wtl::Encoding::UTF16>
     *this += new wtl::DestroyWindowEventHandler<encoding>( this, &MainWindow::onDestroy );
     *this += new wtl::ShowWindowEventHandler<encoding>( this, &MainWindow::onShowWindow );
     *this += new wtl::PaintWindowEventHandler<encoding>( this, &MainWindow::onPaint );
+    *this += new wtl::OwnerDrawEventHandler<encoding>( this, &MainWindow::onOwnerDraw );
     *this += new wtl::ButtonClickEventHandler<encoding,wtl::Button<encoding>>( this, &MainWindow::onButtonClicked );
   }
   
@@ -67,7 +69,7 @@ struct MainWindow : wtl::WindowBase<wtl::Encoding::UTF16>
     // Return singleton
     return wc;
   }
-
+  
   // ---------------------- ACCESSORS ------------------------
 
   // ----------------------- MUTATORS ------------------------
@@ -86,7 +88,7 @@ protected:
                    wtl::c_arr(L"Goodbye!"), 
                    wtl::RectL(500,50,600,100), 
                    ControlId::Goodbye, 
-                   wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify);
+                   wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify|wtl::ButtonStyle::OwnerDraw);
 
     ExitBtn.show(wtl::ShowWindowFlags::Show);
 
@@ -128,6 +130,24 @@ protected:
     return 0; 
   }
   
+  ///////////////////////////////////////////////////////////////////////////////
+  // MainWindow::onOwnerDraw
+  //! Called to paint the button
+  //! 
+  //! \param[in,out] args - Message arguments containing drawing data
+  //! \return LResult - Message result and routing
+  ///////////////////////////////////////////////////////////////////////////////
+  wtl::LResult  onOwnerDraw(wtl::OwnerDrawEventArgs<encoding>& args)
+  {
+    if (args.Ident == ControlId::Goodbye)
+    {
+      args.Graphics.fill(args.Rect, wtl::StockBrush::Green);
+    }
+
+    // Handled
+    return 0;
+  }
+
   ///////////////////////////////////////////////////////////////////////////////
   // MainWindow::onPaint
   //! Called to paint the client area of the window

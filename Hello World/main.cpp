@@ -19,7 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cmdLine, int32 nCmdShow)
 {
-  HelloWorldApp  guiThread(instance);
+  application_t  guiThread(instance);
 
   // Run thread and return result
   return guiThread();
