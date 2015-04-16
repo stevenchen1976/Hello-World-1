@@ -17,7 +17,10 @@ struct MainWindow : wtl::WindowBase<ENC>
   // ------------------------ TYPES --------------------------
   
   //! \alias base - Define base type
-  using base = wtl::WindowBase<wtl::Encoding::UTF16>;
+  using base = wtl::WindowBase<ENC>;
+
+  //! \alias wndclass_t - Inherit window class type
+  using wndclass_t = typename base::wndclass_t;
 
   //! \enum ControlId - Define control Ids
   enum struct ControlId : int16
@@ -27,6 +30,9 @@ struct MainWindow : wtl::WindowBase<ENC>
     Goodbye = First+1,    //!< Exit button
   };
   
+  //! \var encoding - Inherit window character encoding
+  static constexpr wtl::Encoding encoding = base::encoding;
+
   // --------------------- CONSTRUCTION ----------------------
   
   ///////////////////////////////////////////////////////////////////////////////
@@ -43,6 +49,9 @@ struct MainWindow : wtl::WindowBase<ENC>
     *this += new wtl::PaintWindowEventHandler<encoding>( this, &MainWindow::onPaint );
     *this += new wtl::OwnerDrawEventHandler<encoding>( this, &MainWindow::onOwnerDraw );
     *this += new wtl::ButtonClickEventHandler<encoding,wtl::Button<encoding>>( this, &MainWindow::onButtonClicked );
+
+    *this += new wtl::ExitProgramCommandHandler<encoding>(*this);
+    //*this += new wtl::CommandEventHandler<encoding,wtl::PasteClipboardCommand>();
   }
   
   // ------------------------ STATIC -------------------------
@@ -106,7 +115,7 @@ protected:
   wtl::LResult  onButtonClicked(wtl::Button<encoding>& ctrl) 
   { 
     // Close window
-    post(wtl::WindowMessage::CLOSE);
+    this->post(wtl::WindowMessage::CLOSE);
 
     // Return handled
     return 0;     //return wtl::unhandled<wtl::WindowMessage::COMMAND>::value; 
@@ -124,7 +133,7 @@ protected:
     ExitBtn.destroy();
 
     // Close program
-    post(wtl::WindowMessage::QUIT);
+    this->post(wtl::WindowMessage::QUIT);
 
     // Handled
     return 0; 
@@ -207,7 +216,7 @@ private:
   //! \param[in] pt - Target
   //! \param[in] erase - Whether to erase before drawing
   ///////////////////////////////////////////////////////////////////////////////
-  void  drawEasterBunny(wtl::DeviceContext& dc, wtl::PointL& pt, bool erase)
+  void  drawEasterBunny(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
   {
     // Set body colour
     dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Brown);
@@ -246,7 +255,7 @@ private:
   //! \param[in] numEggs - Number of eggs to draw
   //! \param[in] erase - Whether to erase before drawing
   ///////////////////////////////////////////////////////////////////////////////
-  void  drawEasterEggs(wtl::DeviceContext& dc, wtl::PointL& pt, const int32 numEggs, bool erase)
+  void  drawEasterEggs(wtl::DeviceContext& dc, wtl::PointL pt, const int32 numEggs, bool erase)
   {
     // Draw egg backgrounds
     dc += wtl::DrawingMode::Opaque;
@@ -284,7 +293,7 @@ private:
   //! \param[in] pt - Ignored
   //! \param[in] erase - Whether to erase before drawing
   ///////////////////////////////////////////////////////////////////////////////
-  void  drawRiver(wtl::DeviceContext& dc, wtl::PointL& pt, bool erase)
+  void  drawRiver(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
   {
     // Light blue river & dark highlights
     dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Blue);
@@ -308,7 +317,7 @@ private:
   //! \param[in] pt - Target
   //! \param[in] erase - Whether to erase before drawing
   ///////////////////////////////////////////////////////////////////////////////
-  void  drawTree(wtl::DeviceContext& dc, wtl::PointL& pt, bool erase)
+  void  drawTree(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
   {
     // Set dark green outline + light green interior
     dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Forest);
@@ -340,7 +349,7 @@ private:
   //! \param[in] pt - Top left point of sign
   //! \param[in] erase - Whether to erase before drawing
   ///////////////////////////////////////////////////////////////////////////////
-  void  drawSign(wtl::DeviceContext& dc, wtl::PointL& pt, bool erase)
+  void  drawSign(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
   {
     // Large text
     static const wtl::HFont largeFont = wtl::ScreenDC.getFont(wtl::c_arr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);

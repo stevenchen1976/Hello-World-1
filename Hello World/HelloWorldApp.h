@@ -12,35 +12,34 @@
 #include "MainWindow.h"   // Main window
 
 ///////////////////////////////////////////////////////////////////////////////
-//! \struct HelloWorldApp - Encapsulates an instance of the application
+//! \struct HelloWorldApp - Encapsulates the 'Hello World' program
 ///////////////////////////////////////////////////////////////////////////////
 template <wtl::Encoding ENC = wtl::Encoding::UTF16>
-struct HelloWorldApp : wtl::MessageThread<ENC, MainWindow<ENC>>
+struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
 {
   // ------------------------ TYPES --------------------------
 
   //! \alias base - Define base type
-  using base = wtl::MessageThread<ENC, MainWindow<ENC>>;
+  using base = wtl::Application<ENC,MainWindow<ENC>>;
 
   // --------------------- CONSTRUCTION ----------------------
 
   ///////////////////////////////////////////////////////////////////////////////
   // HelloWorldApp::HelloWorldApp
-  //! Creates the Hellow World application
-  //! 
-  //! \param[in] instance - Instance handle
+  //! Create application from handle supplied by WinMain(..)
+  //!
+  //! \param[in] app - Application handle
   ///////////////////////////////////////////////////////////////////////////////
-  HelloWorldApp(HINSTANCE instance) : base(instance)
+  HelloWorldApp(::HMODULE app) : base(app)
   {
-    /*wtl::CommandGroup file("File");
+    //wtl::CommandGroup file("File");
     
-    file += wtl::Command(ID_FILE_OPEN, OpenDocumentCommand);
-    file += wtl::NewDocumentCommand();
-    file += wtl::OpenDocumentCommand();
-    file += wtl::CloseDocumentCommand();
-    file += wtl::ExitProgramCommand();
+    /**this += new wtl::OpenDocumentCommand(Window);
+    *this += new wtl::NewDocumentCommand(Window);
+    *this += new wtl::SaveDocumentCommand(Window);
+    *this += new wtl::ExitProgramCommand(Window);*/
 
-    wtl::CommandGroups += file;
+    /*wtl::CommandGroups += file;
     wtl::CommandGroups += edit;
     wtl::CommandGroups += view;
     wtl::CommandGroups += help;*/
@@ -51,25 +50,31 @@ struct HelloWorldApp : wtl::MessageThread<ENC, MainWindow<ENC>>
   // ----------------------- MUTATORS ------------------------  
 protected:
   ///////////////////////////////////////////////////////////////////////////////
-  // HelloWorldApp::onThreadStart
+  // HelloWorldApp::onStart
   //! Called once upon startup to create the main window
   //! 
+  //! \param[in] mode - Initial display mode
+  //!
   //! \throw wtl::platform_error - Unable to create window
   ///////////////////////////////////////////////////////////////////////////////
-  virtual void onThreadStart()
+  void onStart(wtl::ShowWindowFlags mode) override
   {
     static const wtl::PointL initial(50,50);            //!< Initial window position
     static const wtl::SizeL  size(640,480);             //!< Initial window size
-    static const wchar_t     title[] = L"Hello World";  //!< Window title
-
+    
     // Create window
-    Window.createEx(nullptr, wtl::c_arr(L"Hello World"), wtl::RectL(initial,size), wtl::WindowStyle::OverlappedWindow, wtl::WindowStyleEx::None, nullptr);
+    this->Window.createEx(nullptr, wtl::c_arr(L"Hello World"), wtl::RectL(initial,size), wtl::WindowStyle::OverlappedWindow); 
+    
+    // Show window
+    this->Window.show(mode);
+    this->Window.update();
   }
 
   // -------------------- REPRESENTATION ---------------------
 };
 
-//! \alias application_t - Define application type according to project settings
+
+//! \alias application_t - Define ANSI/UNICODE application type according to build settings (Size of TCHAR)
 using application_t = HelloWorldApp<wtl::default_encoding<TCHAR>::value>;
 
 #endif
