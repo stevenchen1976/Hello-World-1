@@ -10,44 +10,11 @@
 
 #include "wtl/WTL.hpp"   // Windows Template Library
 
-//! \struct GoodbyeButton - Defines the close program button
-//template <wtl::Encoding ENC = wtl::Encoding::UTF16>
-//struct GoodbyeButton : wtl::Button<ENC>
-//{
-//  //! \alias base - Define base type
-//  using base = wtl::Button<ENC>;
-//
-//  //wtl::ButtonClickEvent<base::encoding>        Click;         //!< Button click
-//
-//  ///////////////////////////////////////////////////////////////////////////////
-//  // GoodbyeButton::GoodbyeButton
-//  //! Creates the button object (but not the handle)
-//  //! 
-//  //! \param[in] instance - Module handle
-//  ///////////////////////////////////////////////////////////////////////////////
-//  GoodbyeButton(HINSTANCE instance) : base(instance)
-//  {
-//    this->Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &GoodbyeButton::onClick);
-//    this->dummy = 42;
-//  }
-//
-//  ///////////////////////////////////////////////////////////////////////////////
-//  // GoodbyeButton::onClick
-//  //! Called when clicked to exit the program
-//  //! 
-//  //! \param[in,out] &args - Message arguments 
-//  //! \return LResult - Message result and routing
-//  ///////////////////////////////////////////////////////////////////////////////
-//  virtual wtl::LResult  onClick(wtl::ButtonClickEventArgs<base::encoding>& args) 
-//  { 
-//    // Execute 'Exit Program' gui command
-//    this->parent()->execute(wtl::CommandId::FILE_EXIT);
-//    return 0;
-//  }
-//};
-  
-
+///////////////////////////////////////////////////////////////////////////////
 //! \struct MainWindow - Main window class
+//! 
+//! \tparam ENC - Window charactrer encoding (UTF16 if unspecified)
+///////////////////////////////////////////////////////////////////////////////
 template <wtl::Encoding ENC = wtl::Encoding::UTF16>
 struct MainWindow : wtl::WindowBase<ENC>
 {
@@ -72,7 +39,7 @@ struct MainWindow : wtl::WindowBase<ENC>
 
   // -------------------- REPRESENTATION ---------------------
   
-  wtl::Button<encoding>  GoodbyeBtn;    //!< 'Exit program' button control
+  wtl::Button<encoding>  GoodbyeBtn;    //!< 'Exit program' button 
 
   // --------------------- CONSTRUCTION ----------------------
   
@@ -85,14 +52,14 @@ struct MainWindow : wtl::WindowBase<ENC>
   MainWindow(HINSTANCE instance) : base(getClass(instance)), 
                                    GoodbyeBtn(instance)
   {
-    // Define window commands
+    // Gui commands
     this->ActiveCommands += new wtl::ExitProgramCommand<encoding>( *this );
 
-    // Attach event handlers
+    // Window events
     this->Destroy += new wtl::DestroyWindowEventHandler<encoding>( this, &MainWindow::onDestroy );
     this->Show += new wtl::ShowWindowEventHandler<encoding>( this, &MainWindow::onShowWindow );
 
-    // Attach to goodbye button
+    // Control events
     this->GoodbyeBtn.Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
   }
   

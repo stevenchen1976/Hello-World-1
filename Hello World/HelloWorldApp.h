@@ -32,17 +32,6 @@ struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
   ///////////////////////////////////////////////////////////////////////////////
   HelloWorldApp(::HMODULE app) : base(app)
   {
-    //wtl::CommandGroup file("File");
-    
-    /**this += new wtl::OpenDocumentCommand(Window);
-    *this += new wtl::NewDocumentCommand(Window);
-    *this += new wtl::SaveDocumentCommand(Window);
-    *this += new wtl::ExitProgramCommand(Window);*/
-
-    /*wtl::CommandGroups += file;
-    wtl::CommandGroups += edit;
-    wtl::CommandGroups += view;
-    wtl::CommandGroups += help;*/
   }
 
   // ---------------------- ACCESSORS ------------------------
