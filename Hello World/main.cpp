@@ -19,10 +19,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cmdLine, int32 nCmdShow)
 {
-  application_t program(instance);
+  try
+  {
+    application_t program(instance);
   
-  // Run program and return result
-  return program.run();
+    // Run program and return result
+    return program.run();
+  }
+  catch (std::exception& e)
+  {
+    wtl::cdebug.log(HERE, e);
+    return -1;
+  }
 }
 
 

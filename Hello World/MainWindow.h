@@ -10,6 +10,43 @@
 
 #include "wtl/WTL.hpp"   // Windows Template Library
 
+//! \struct GoodbyeButton - Defines the close program button
+//template <wtl::Encoding ENC = wtl::Encoding::UTF16>
+//struct GoodbyeButton : wtl::Button<ENC>
+//{
+//  //! \alias base - Define base type
+//  using base = wtl::Button<ENC>;
+//
+//  //wtl::ButtonClickEvent<base::encoding>        Click;         //!< Button click
+//
+//  ///////////////////////////////////////////////////////////////////////////////
+//  // GoodbyeButton::GoodbyeButton
+//  //! Creates the button object (but not the handle)
+//  //! 
+//  //! \param[in] instance - Module handle
+//  ///////////////////////////////////////////////////////////////////////////////
+//  GoodbyeButton(HINSTANCE instance) : base(instance)
+//  {
+//    this->Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &GoodbyeButton::onClick);
+//    this->dummy = 42;
+//  }
+//
+//  ///////////////////////////////////////////////////////////////////////////////
+//  // GoodbyeButton::onClick
+//  //! Called when clicked to exit the program
+//  //! 
+//  //! \param[in,out] &args - Message arguments 
+//  //! \return LResult - Message result and routing
+//  ///////////////////////////////////////////////////////////////////////////////
+//  virtual wtl::LResult  onClick(wtl::ButtonClickEventArgs<base::encoding>& args) 
+//  { 
+//    // Execute 'Exit Program' gui command
+//    this->parent()->execute(wtl::CommandId::FILE_EXIT);
+//    return 0;
+//  }
+//};
+  
+
 //! \struct MainWindow - Main window class
 template <wtl::Encoding ENC = wtl::Encoding::UTF16>
 struct MainWindow : wtl::WindowBase<ENC>
@@ -33,6 +70,10 @@ struct MainWindow : wtl::WindowBase<ENC>
   //! \var encoding - Inherit window character encoding
   static constexpr wtl::Encoding encoding = base::encoding;
 
+  // -------------------- REPRESENTATION ---------------------
+  
+  wtl::Button<encoding>  GoodbyeBtn;    //!< 'Exit program' button control
+
   // --------------------- CONSTRUCTION ----------------------
   
   ///////////////////////////////////////////////////////////////////////////////
@@ -41,17 +82,18 @@ struct MainWindow : wtl::WindowBase<ENC>
   //! 
   //! \param[in] instance - Module handle
   ///////////////////////////////////////////////////////////////////////////////
-  MainWindow(HINSTANCE instance) : base(getClass(instance)), ExitBtn(instance)
+  MainWindow(HINSTANCE instance) : base(getClass(instance)), 
+                                   GoodbyeBtn(instance)
   {
-    *this += new wtl::CreateWindowEventHandler<encoding>( this, &MainWindow::onCreate );
-    *this += new wtl::DestroyWindowEventHandler<encoding>( this, &MainWindow::onDestroy );
-    *this += new wtl::ShowWindowEventHandler<encoding>( this, &MainWindow::onShowWindow );
-    *this += new wtl::PaintWindowEventHandler<encoding>( this, &MainWindow::onPaint );
-    *this += new wtl::OwnerDrawEventHandler<encoding>( this, &MainWindow::onOwnerDraw );
-    *this += new wtl::ButtonClickEventHandler<encoding,wtl::Button<encoding>>( this, &MainWindow::onButtonClicked );
+    // Define window commands
+    this->ActiveCommands += new wtl::ExitProgramCommand<encoding>( *this );
 
-    *this += new wtl::ExitProgramCommandHandler<encoding>(*this);
-    //*this += new wtl::CommandEventHandler<encoding,wtl::PasteClipboardCommand>();
+    // Attach event handlers
+    this->Destroy += new wtl::DestroyWindowEventHandler<encoding>( this, &MainWindow::onDestroy );
+    this->Show += new wtl::ShowWindowEventHandler<encoding>( this, &MainWindow::onShowWindow );
+
+    // Attach to goodbye button
+    this->GoodbyeBtn.Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
   }
   
   // ------------------------ STATIC -------------------------
@@ -90,35 +132,35 @@ protected:
   //! \param[in] &args - Message arguments containing window creation properties 
   //! \return LResult - Message result and routing
   ///////////////////////////////////////////////////////////////////////////////
-  wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) 
+  wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
   { 
-    // Create button
-    ExitBtn.create(*this, 
-                   wtl::c_arr(L"Goodbye!"), 
-                   wtl::RectL(500,50,600,100), 
-                   ControlId::Goodbye, 
-                   wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify|wtl::ButtonStyle::OwnerDraw);
+    // Create & show button
+    GoodbyeBtn.create(*this, 
+                      wtl::c_arr(L"Goodbye!"), 
+                      wtl::RectL(500,50,600,100), 
+                      ControlId::Goodbye, 
+                      wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify|wtl::ButtonStyle::OwnerDraw);
 
-    ExitBtn.show(wtl::ShowWindowFlags::Show);
+    GoodbyeBtn.show(wtl::ShowWindowFlags::Hide);
 
     // Handled
     return 0; 
   }
   
   ///////////////////////////////////////////////////////////////////////////////
-  // MainWindow::onButtonClick
-  //! Called in response to an event from a standard button control
+  // MainWindow::onGoodbyeClick
+  //! Called in response to clicking 'GoodBye' button
   //! 
-  //! \param[in] &ctrl - Button control
+  //! \param[in] &args - Message arguments
   //! \return LResult - Message result and routing
   ///////////////////////////////////////////////////////////////////////////////
-  wtl::LResult  onButtonClicked(wtl::Button<encoding>& ctrl) 
+  wtl::LResult  onGoodbyeClick(wtl::ButtonClickEventArgs<base::encoding>& args) 
   { 
-    // Close window
-    this->post(wtl::WindowMessage::CLOSE);
-
-    // Return handled
-    return 0;     //return wtl::unhandled<wtl::WindowMessage::COMMAND>::value; 
+    // Execute 'Exit Program' gui command
+    execute(wtl::CommandId::APP_EXIT);
+    
+    // Handled
+    return 0;     
   }
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -130,10 +172,10 @@ protected:
   wtl::LResult  onDestroy() 
   { 
     // Destroy children
-    ExitBtn.destroy();
+    GoodbyeBtn.destroy();
 
     // Close program
-    this->post(wtl::WindowMessage::QUIT);
+    this->post<wtl::WindowMessage::QUIT>();
 
     // Handled
     return 0; 
@@ -146,16 +188,16 @@ protected:
   //! \param[in,out] args - Message arguments containing drawing data
   //! \return LResult - Message result and routing
   ///////////////////////////////////////////////////////////////////////////////
-  wtl::LResult  onOwnerDraw(wtl::OwnerDrawEventArgs<encoding>& args)
-  {
-    if (args.Ident == ControlId::Goodbye)
-    {
-      args.Graphics.fill(args.Rect, wtl::StockBrush::Green);
-    }
+  //wtl::LResult  onOwnerDraw(wtl::OwnerDrawEventArgs<encoding>& args)
+  //{
+  //  if (args.Ident == ControlId::Goodbye)
+  //  {
+  //    args.Graphics.fill(args.Rect, wtl::StockBrush::Green);
+  //  }
 
-    // Handled
-    return 0;
-  }
+  //  // Handled
+  //  return 0;
+  //}
 
   ///////////////////////////////////////////////////////////////////////////////
   // MainWindow::onPaint
@@ -164,7 +206,7 @@ protected:
   //! \param[in,out] args - Message arguments containing drawing data
   //! \return LResult - Message result and routing
   ///////////////////////////////////////////////////////////////////////////////
-  wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>& args)
+  wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>& args) override
   {
     static int32 numEggs = wtl::Random::number(4,8);
 
@@ -389,9 +431,6 @@ private:
     dc.clear();
   }
 
-  // -------------------- REPRESENTATION ---------------------
-
-  wtl::Button<encoding>  ExitBtn;    //!< Child control
 };
 
 
