@@ -35,7 +35,7 @@ struct MainWindow : wtl::WindowBase<ENC>
   };
   
   //! \var encoding - Inherit window character encoding
-  static constexpr wtl::Encoding encoding = base::encoding;
+  static constexpr wtl::Encoding  encoding = base::encoding;
 
   // -------------------- REPRESENTATION ---------------------
   
@@ -53,11 +53,11 @@ struct MainWindow : wtl::WindowBase<ENC>
                                    GoodbyeBtn(instance)
   {
     // Gui commands
-    this->ActiveCommands += new wtl::ExitProgramCommand<encoding>( *this );
+    this->ActiveCommands += new wtl::ExitProgramCommand<encoding>(*this);
 
     // Window events
-    this->Destroy += new wtl::DestroyWindowEventHandler<encoding>( this, &MainWindow::onDestroy );
-    this->Show += new wtl::ShowWindowEventHandler<encoding>( this, &MainWindow::onShowWindow );
+    this->Destroy += new wtl::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
+    this->Show += new wtl::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
     // Control events
     this->GoodbyeBtn.Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
@@ -108,7 +108,7 @@ protected:
                       ControlId::Goodbye, 
                       wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify|wtl::ButtonStyle::OwnerDraw);
 
-    GoodbyeBtn.show(wtl::ShowWindowFlags::Hide);
+    GoodbyeBtn.show(wtl::ShowWindowFlags::Show);
 
     // Handled
     return 0; 
@@ -121,10 +121,10 @@ protected:
   //! \param[in] &args - Message arguments
   //! \return LResult - Message result and routing
   ///////////////////////////////////////////////////////////////////////////////
-  wtl::LResult  onGoodbyeClick(wtl::ButtonClickEventArgs<base::encoding>& args) 
+  wtl::LResult  onGoodbyeClick(wtl::ButtonClickEventArgs<encoding>& args) 
   { 
     // Execute 'Exit Program' gui command
-    execute(wtl::CommandId::APP_EXIT);
+    this->execute(wtl::CommandId::APP_EXIT);
     
     // Handled
     return 0;     
