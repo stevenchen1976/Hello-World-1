@@ -23,6 +23,9 @@ struct MainWindow : wtl::WindowBase<ENC>
   //! \alias base - Define base type
   using base = wtl::WindowBase<ENC>;
 
+  //! \alias wndmenu_t - Inherit window menu type
+  using wndmenu_t = typename base::wndmenu_t;
+
   //! \alias wndclass_t - Inherit window class type
   using wndclass_t = typename base::wndclass_t;
 
@@ -52,15 +55,24 @@ struct MainWindow : wtl::WindowBase<ENC>
   MainWindow(HINSTANCE instance) : base(getClass(instance)), 
                                    GoodbyeBtn(instance)
   {
-    // Gui commands
-    this->ActiveCommands += new wtl::ExitProgramCommand<encoding>(*this);
-
-    // Window events
+    // Define Window event listeners
     this->Destroy += new wtl::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
     this->Show += new wtl::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
-    // Control events
+    // Attach Child Control event listeners
     this->GoodbyeBtn.Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
+
+    // Define 'File' actions
+    this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
+                                                                                       new wtl::OpenDocumentCommand<encoding>(*this),
+                                                                                       new wtl::SaveDocumentCommand<encoding>(*this),
+                                                                                       new wtl::ExitProgramCommand<encoding>(*this) });
+    // Define 'Edit' actions
+    this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
+                                                                                       new wtl::CopyClipboardCommand<encoding>(),
+                                                                                       new wtl::PasteClipboardCommand<encoding>() });
+    // Define 'Help' actions
+    this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
   }
   
   // ------------------------ STATIC -------------------------
@@ -74,15 +86,15 @@ struct MainWindow : wtl::WindowBase<ENC>
   ///////////////////////////////////////////////////////////////////////////////
   static wndclass_t& getClass(HINSTANCE instance) 
   {
-    static wndclass_t wc(instance,                                              // Registering module
-                         wtl::resource_name(L"MainWindowClass"),                // Class name
-                         wtl::ClassStyle::HRedraw|wtl::ClassStyle::VRedraw,     // Styles (Redraw upon resize)
-                         base::WndProc,                                         // Window procedure
-                         wtl::ResourceIdW::npos,                                // Window menu 
-                         wtl::HCursor(wtl::SystemCursor::Arrow),                // Window cursor
-                         wtl::HBrush(wtl::Colour::Green),                       // Window background brush 
-                         wtl::HIcon(wtl::SystemIcon::WinLogo),                  // Large window icon 
-                         wtl::HIcon(wtl::SystemIcon::WinLogo));                 // Small window icon 
+    static wndclass_t wc(instance,                                              //!< Registering module
+                         wtl::resource_name(L"MainWindowClass"),                //!< Class name
+                         wtl::ClassStyle::HRedraw|wtl::ClassStyle::VRedraw,     //!< Styles (Redraw upon resize)
+                         base::WndProc,                                         //!< Window procedure
+                         wtl::ResourceIdW::npos,                                //!< Window menu 
+                         wtl::HCursor(wtl::SystemCursor::Arrow),                //!< Window cursor
+                         wtl::HBrush(wtl::Colour::Green),                       //!< Window background brush 
+                         wtl::HIcon(wtl::SystemIcon::WinLogo),                  //!< Large window icon 
+                         wtl::HIcon(wtl::SystemIcon::WinLogo));                 //!< Small window icon 
 
     // Return singleton
     return wc;
@@ -101,7 +113,12 @@ protected:
   ///////////////////////////////////////////////////////////////////////////////
   wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
   { 
-    // Create & show button
+    // Populate window menu
+    *this->Menu += this->ActionGroups[wtl::CommandGroupId::File];
+    *this->Menu += this->ActionGroups[wtl::CommandGroupId::Edit];
+    *this->Menu += this->ActionGroups[wtl::CommandGroupId::Help];
+
+    // Create 'exit' button
     GoodbyeBtn.create(*this, 
                       wtl::c_arr(L"Goodbye!"), 
                       wtl::RectL(500,50,600,100), 
@@ -124,7 +141,7 @@ protected:
   wtl::LResult  onGoodbyeClick(wtl::ButtonClickEventArgs<encoding>& args) 
   { 
     // Execute 'Exit Program' gui command
-    this->execute(wtl::CommandId::APP_EXIT);
+    this->execute(wtl::CommandId::App_Exit);
     
     // Handled
     return 0;     
