@@ -64,13 +64,13 @@ struct MainWindow : wtl::WindowBase<ENC>
 
     // Define 'File' actions
     this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
-                                                                                       new wtl::OpenDocumentCommand<encoding>(*this),
-                                                                                       new wtl::SaveDocumentCommand<encoding>(*this),
-                                                                                       new wtl::ExitProgramCommand<encoding>(*this) });
+                                                                                      new wtl::OpenDocumentCommand<encoding>(*this),
+                                                                                      new wtl::SaveDocumentCommand<encoding>(*this),
+                                                                                      new wtl::ExitProgramCommand<encoding>(*this) });
     // Define 'Edit' actions
     this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
-                                                                                       new wtl::CopyClipboardCommand<encoding>(),
-                                                                                       new wtl::PasteClipboardCommand<encoding>() });
+                                                                                      new wtl::CopyClipboardCommand<encoding>(),
+                                                                                      new wtl::PasteClipboardCommand<encoding>() });
     // Define 'Help' actions
     this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
   }
