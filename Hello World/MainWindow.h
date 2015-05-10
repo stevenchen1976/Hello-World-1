@@ -18,10 +18,13 @@
 template <wtl::Encoding ENC = wtl::Encoding::UTF16>
 struct MainWindow : wtl::WindowBase<ENC>
 {
-  // ------------------------ TYPES --------------------------
+  // ---------------------------------- TYPES & CONSTANTS ---------------------------------
   
   //! \alias base - Define base type
   using base = wtl::WindowBase<ENC>;
+  
+  //! \alias type - Define own type
+  using type = MainWindow<ENC>;
 
   //! \alias wndmenu_t - Inherit window menu type
   using wndmenu_t = typename base::wndmenu_t;
@@ -29,22 +32,53 @@ struct MainWindow : wtl::WindowBase<ENC>
   //! \alias wndclass_t - Inherit window class type
   using wndclass_t = typename base::wndclass_t;
 
+  //! \var encoding - Inherit window character encoding
+  static constexpr wtl::Encoding  encoding = base::encoding;
+  
   //! \enum ControlId - Define control Ids
-  enum struct ControlId : int16
+  enum class ControlId : wtl::int16
   {
-    First = int16(wtl::WindowId::User),
+    First = wtl::int16(wtl::WindowId::User),
 
     Goodbye = First+1,    //!< Exit button
   };
   
-  //! \var encoding - Inherit window character encoding
-  static constexpr wtl::Encoding  encoding = base::encoding;
-
-  // -------------------- REPRESENTATION ---------------------
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //! \struct ExitButton - Defines the 'exit' button control
+  /////////////////////////////////////////////////////////////////////////////////////////
+  struct ExitButton : wtl::Button<encoding>
+  {
+    // ---------------------------------- TYPES & CONSTANTS ---------------------------------
   
-  wtl::Button<encoding>  GoodbyeBtn;    //!< 'Exit program' button 
+    //! \alias base - Define base type
+    using base = wtl::Button<encoding>;
+    
+    // ----------------------------------- REPRESENTATION -----------------------------------
+    
+    // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // ExitButton::ExitButton
+    //! Creates a standard button control
+    //! 
+    //! \param[in] instance - Owning instance
+    //! 
+    //! \throw wtl::platform_error - Unrecognised system window class
+    /////////////////////////////////////////////////////////////////////////////////////////
+    ExitButton(::HINSTANCE instance) : base(instance)
+    {
+      // Properties
+      this->Ident = wtl::window_id(ControlId::Goodbye);
+      this->Size = wtl::SizeL(100,50);
+      //this->Text = wtl::c_arr("Goodbye");
+    }
+  };
 
-  // --------------------- CONSTRUCTION ----------------------
+  // ----------------------------------- REPRESENTATION -----------------------------------
+  
+  ExitButton  GoodbyeBtn;    //!< 'Exit program' button 
+
+  // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
   
   ///////////////////////////////////////////////////////////////////////////////
   // MainWindow::MainWindow
@@ -52,30 +86,36 @@ struct MainWindow : wtl::WindowBase<ENC>
   //! 
   //! \param[in] instance - Module handle
   ///////////////////////////////////////////////////////////////////////////////
-  MainWindow(HINSTANCE instance) : base(getClass(instance)), 
-                                   GoodbyeBtn(instance)
+  MainWindow(::HINSTANCE instance) : base(getClass(instance)), 
+                                     GoodbyeBtn(instance)
   {
-    // Define Window event listeners
+    // Properties
+    this->Size = wtl::SizeL(640,480);
+    this->Style = wtl::WindowStyle::OverlappedWindow;
+    this->StyleEx = wtl::WindowStyleEx::None;
+
+    // Events
     this->Destroy += new wtl::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
     this->Show += new wtl::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
-    // Attach Child Control event listeners
+    // Controls
     this->GoodbyeBtn.Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
+    this->GoodbyeBtn.Position = wtl::PointL(500,50);
 
-    // Define 'File' actions
+    // Actions: File
     this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
                                                                                       new wtl::OpenDocumentCommand<encoding>(*this),
                                                                                       new wtl::SaveDocumentCommand<encoding>(*this),
                                                                                       new wtl::ExitProgramCommand<encoding>(*this) });
-    // Define 'Edit' actions
+    // Actions: Edit
     this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
                                                                                       new wtl::CopyClipboardCommand<encoding>(),
                                                                                       new wtl::PasteClipboardCommand<encoding>() });
-    // Define 'Help' actions
+    // Actions: Help
     this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
   }
   
-  // ------------------------ STATIC -------------------------
+  // ----------------------------------- STATIC METHODS -----------------------------------
   
   ///////////////////////////////////////////////////////////////////////////////
   // MainWindow::getClass 
@@ -84,13 +124,13 @@ struct MainWindow : wtl::WindowBase<ENC>
   //! \param[in] instance - Module handle
   //! \return wndclass_t& - Window class 
   ///////////////////////////////////////////////////////////////////////////////
-  static wndclass_t& getClass(HINSTANCE instance) 
+  static wndclass_t& getClass(::HINSTANCE instance) 
   {
     static wndclass_t wc(instance,                                              //!< Registering module
                          wtl::resource_name(L"MainWindowClass"),                //!< Class name
                          wtl::ClassStyle::HRedraw|wtl::ClassStyle::VRedraw,     //!< Styles (Redraw upon resize)
                          base::WndProc,                                         //!< Window procedure
-                         wtl::ResourceIdW::npos,                                //!< Window menu 
+                         wtl::ResourceIdW(),                                    //!< Window menu 
                          wtl::HCursor(wtl::SystemCursor::Arrow),                //!< Window cursor
                          wtl::HBrush(wtl::Colour::Green),                       //!< Window background brush 
                          wtl::HIcon(wtl::SystemIcon::WinLogo),                  //!< Large window icon 
@@ -100,9 +140,9 @@ struct MainWindow : wtl::WindowBase<ENC>
     return wc;
   }
   
-  // ---------------------- ACCESSORS ------------------------
+  // ---------------------------------- ACCESSOR METHODS ----------------------------------
 
-  // ----------------------- MUTATORS ------------------------
+  // ----------------------------------- MUTATOR METHODS ----------------------------------
 protected:
   ///////////////////////////////////////////////////////////////////////////////
   // MainWindow::onCreate
@@ -114,17 +154,15 @@ protected:
   wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
   { 
     // Populate window menu
-    *this->Menu += this->ActionGroups[wtl::CommandGroupId::File];
-    *this->Menu += this->ActionGroups[wtl::CommandGroupId::Edit];
-    *this->Menu += this->ActionGroups[wtl::CommandGroupId::Help];
+    this->Menu += this->ActionGroups[wtl::CommandGroupId::File];
+    this->Menu += this->ActionGroups[wtl::CommandGroupId::Edit];
+    this->Menu += this->ActionGroups[wtl::CommandGroupId::Help];
 
     // Create 'exit' button
-    GoodbyeBtn.create(*this, 
-                      wtl::c_arr(L"Goodbye!"), 
-                      wtl::RectL(500,50,600,100), 
-                      ControlId::Goodbye, 
-                      wtl::WindowStyle::ChildWindow | wtl::ButtonStyle::Centre|wtl::ButtonStyle::Notify|wtl::ButtonStyle::OwnerDraw);
+    GoodbyeBtn.create(this, wtl::c_arr(L"Goodbye!"));  //, wtl::RectL(wtl::PointL(0,0), wtl::SizeL(0,0)));
+    Children.insert(GoodbyeBtn);
 
+    // Show 'exit' button
     GoodbyeBtn.show(wtl::ShowWindowFlags::Show);
 
     // Handled
@@ -192,7 +230,7 @@ protected:
   ///////////////////////////////////////////////////////////////////////////////
   wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>& args) override
   {
-    static int32 numEggs = wtl::Random::number(4,8);
+    static wtl::int32 numEggs = wtl::Random::number(4,8);
 
     // Draw background
     args.Graphics.fill(args.Rect, wtl::StockBrush::Green);
@@ -281,13 +319,13 @@ private:
   //! \param[in] numEggs - Number of eggs to draw
   //! \param[in] erase - Whether to erase before drawing
   ///////////////////////////////////////////////////////////////////////////////
-  void  drawEasterEggs(wtl::DeviceContext& dc, wtl::PointL pt, const int32 numEggs, bool erase)
+  void  drawEasterEggs(wtl::DeviceContext& dc, wtl::PointL pt, const wtl::int32 numEggs, bool erase)
   {
     // Draw egg backgrounds
     dc += wtl::DrawingMode::Opaque;
 
     // [EGGS] Draw eggs with random colours
-    for (int32 idx = 0; idx < numEggs; ++idx)
+    for (wtl::int32 idx = 0; idx < numEggs; ++idx)
     {
       static constexpr wtl::Colour eggColours[] = {wtl::Colour::Beige, wtl::Colour::Honey, wtl::Colour::Gold, wtl::Colour::Green, wtl::Colour::Magenta, wtl::Colour::Rose,
                                                    wtl::Colour::Yellow, wtl::Colour::SkyBlue, wtl::Colour::Orange, wtl::Colour::Leaves, wtl::Colour::Teal};
@@ -378,7 +416,7 @@ private:
   void  drawSign(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
   {
     // Large text
-    static const wtl::HFont largeFont = wtl::ScreenDC.getFont(wtl::c_arr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
+    static const wtl::HFont largeFont = wtl::DeviceContext::ScreenDC.getFont(wtl::c_arr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
     dc += largeFont;
 
     // [SIGN] Black outline + brown interior

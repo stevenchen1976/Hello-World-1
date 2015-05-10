@@ -17,7 +17,7 @@
 //! \param[in] cmdLine - Command line
 //! \param[in] nCmdShow - Desired display mode
 ////////////////////////////////////////////////////////////////////////////////
-int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cmdLine, int32 nCmdShow)
+wtl::int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cmdLine, wtl::int32 nCmdShow)
 {
   try
   {

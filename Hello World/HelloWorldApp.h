@@ -17,12 +17,12 @@
 template <wtl::Encoding ENC = wtl::Encoding::UTF16>
 struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
 {
-  // ------------------------ TYPES --------------------------
+  // ---------------------------------- TYPES & CONSTANTS ---------------------------------
 
   //! \alias base - Define base type
   using base = wtl::Application<ENC,MainWindow<ENC>>;
 
-  // --------------------- CONSTRUCTION ----------------------
+  // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
 
   ///////////////////////////////////////////////////////////////////////////////
   // HelloWorldApp::HelloWorldApp
@@ -34,9 +34,9 @@ struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
   {
   }
 
-  // ---------------------- ACCESSORS ------------------------
+  // ---------------------------------- ACCESSOR METHODS ----------------------------------
 
-  // ----------------------- MUTATORS ------------------------  
+  // ----------------------------------- MUTATOR METHODS ----------------------------------  
 protected:
   ///////////////////////////////////////////////////////////////////////////////
   // HelloWorldApp::onStart
@@ -48,18 +48,15 @@ protected:
   ///////////////////////////////////////////////////////////////////////////////
   void onStart(wtl::ShowWindowFlags mode) override
   {
-    static const wtl::PointL initial(50,50);            //!< Initial window position
-    static const wtl::SizeL  size(640,480);             //!< Initial window size
-    
     // Create window
-    this->Window.createEx(nullptr, wtl::c_arr(L"Hello World"), wtl::RectL(initial,size), wtl::WindowStyle::OverlappedWindow); 
+    this->Window.create(nullptr, wtl::c_arr(L"Hello World")); 
     
     // Show window
     this->Window.show(mode);
     this->Window.update();
   }
 
-  // -------------------- REPRESENTATION ---------------------
+  // ----------------------------------- REPRESENTATION -----------------------------------
 };
 
 
