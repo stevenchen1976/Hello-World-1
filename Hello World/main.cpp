@@ -21,7 +21,7 @@ wtl::int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cm
 {
   try
   {
-    application_t program(instance);
+    hw1::application_t program(instance);
   
     // Run program and return result
     return program.run();
