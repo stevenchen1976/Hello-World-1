@@ -21,7 +21,6 @@
 #include "wtl/windows/commands/AboutProgramCommand.hpp"         //!< wtl::AboutProgramCommand
 #include "wtl/windows/commands/ExitProgramCommand.hpp"          //!< wtl::ExitProgramCommand
 
-
 //! \namespace hw1 - Hello World v1 (Drawing demonstration)
 namespace hw1
 {
@@ -61,12 +60,12 @@ namespace hw1
     /////////////////////////////////////////////////////////////////////////////////////////
     //! \struct ExitButton - Defines the 'exit' button control
     /////////////////////////////////////////////////////////////////////////////////////////
-    struct ExitButton : wtl::Button<encoding>
+    struct ExitButton : wtl::controls::Button<encoding>
     {
       // ---------------------------------- TYPES & CONSTANTS ---------------------------------
   
       //! \alias base - Define base type
-      using base = wtl::Button<encoding>;
+      using base = wtl::controls::Button<encoding>;
     
       // ----------------------------------- REPRESENTATION -----------------------------------
     
@@ -110,11 +109,11 @@ namespace hw1
       this->StyleEx = wtl::WindowStyleEx::None;
 
       // Events
-      this->Destroy += new wtl::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
-      this->Show += new wtl::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
+      this->Destroy += new wtl::events::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
+      this->Show += new wtl::events::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
       // Controls
-      this->GoodbyeBtn.Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
+      this->GoodbyeBtn.Click += new wtl::events::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
       this->GoodbyeBtn.Position = wtl::PointL(500,50);
 
       // Actions: File
@@ -166,7 +165,7 @@ namespace hw1
     //! \param[in] &args - Message arguments containing window creation properties 
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
+    wtl::LResult  onCreate(wtl::events::CreateWindowEventArgs<encoding>& args) override
     { 
       // Populate window menu
       this->Menu += this->ActionGroups[wtl::CommandGroupId::File];
@@ -191,7 +190,7 @@ namespace hw1
     //! \param[in] &args - Message arguments
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onGoodbyeClick(wtl::ButtonClickEventArgs<encoding>& args) 
+    wtl::LResult  onGoodbyeClick(wtl::events::ButtonClickEventArgs<encoding>& args) 
     { 
       // Execute 'Exit Program' gui command
       this->execute(wtl::CommandId::App_Exit);
@@ -243,7 +242,7 @@ namespace hw1
     //! \param[in,out] args - Message arguments containing drawing data
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>& args) override
+    wtl::LResult  onPaint(wtl::events::PaintWindowEventArgs<encoding>& args) override
     {
       static wtl::int32 numEggs = wtl::Random::number(4,8);
 
@@ -280,7 +279,7 @@ namespace hw1
     //! \param[in] &args - Message arguments 
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onShowWindow(wtl::ShowWindowEventArgs<encoding>& args) 
+    wtl::LResult  onShowWindow(wtl::events::ShowWindowEventArgs<encoding>& args) 
     { 
       // Handled
       return 0; 
