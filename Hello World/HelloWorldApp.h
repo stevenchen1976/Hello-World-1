@@ -12,6 +12,8 @@
 #include "wtl/modules/Application.hpp"      //!< wtl::Application
 #include "MainWindow.h"                     //!< hw1::Mainwindow
 
+using namespace wtl;
+
 //! \namespace hw1 - Hello World v1 (Drawing demonstration)
 namespace hw1
 {
@@ -19,13 +21,13 @@ namespace hw1
   ///////////////////////////////////////////////////////////////////////////////
   //! \struct HelloWorldApp - Encapsulates the 'Hello World' program
   ///////////////////////////////////////////////////////////////////////////////
-  template <wtl::Encoding ENC = wtl::Encoding::UTF16>
-  struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
+  template <Encoding ENC = Encoding::UTF16>
+  struct HelloWorldApp : Application<ENC,MainWindow<ENC>>
   {
     // ---------------------------------- TYPES & CONSTANTS ---------------------------------
 
     //! \alias base - Define base type
-    using base = wtl::Application<ENC,MainWindow<ENC>>;
+    using base = Application<ENC,MainWindow<ENC>>;
 
     // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
 
@@ -49,12 +51,12 @@ namespace hw1
     //! 
     //! \param[in] mode - Initial display mode
     //!
-    //! \throw wtl::platform_error - Unable to create window
+    //! \throw platform_error - Unable to create window
     ///////////////////////////////////////////////////////////////////////////////
-    void onStart(wtl::ShowWindowFlags mode) override
+    void onStart(ShowWindowFlags mode) override
     {
       // Create window
-      this->Window.create(nullptr, wtl::c_arr(L"Hello World")); 
+      this->Window.create(nullptr, c_arr(L"Hello World")); 
     
       // Show window
       this->Window.show(mode);
@@ -66,7 +68,7 @@ namespace hw1
 
 
   //! \alias application_t - Define ANSI/UNICODE application type according to build settings (Size of TCHAR)
-  using application_t = HelloWorldApp<wtl::default_encoding<TCHAR>::value>;
+  using application_t = HelloWorldApp<default_encoding<TCHAR>::value>;
 
 } // namespace
 

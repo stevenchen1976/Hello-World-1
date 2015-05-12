@@ -21,6 +21,10 @@
 #include "wtl/windows/commands/AboutProgramCommand.hpp"         //!< wtl::AboutProgramCommand
 #include "wtl/windows/commands/ExitProgramCommand.hpp"          //!< wtl::ExitProgramCommand
 
+using namespace wtl;
+using namespace wtl::controls;
+using namespace wtl::events;
+
 //! \namespace hw1 - Hello World v1 (Drawing demonstration)
 namespace hw1
 {
@@ -29,13 +33,13 @@ namespace hw1
   //! 
   //! \tparam ENC - Window charactrer encoding (UTF16 if unspecified)
   ///////////////////////////////////////////////////////////////////////////////
-  template <wtl::Encoding ENC = wtl::Encoding::UTF16>
-  struct MainWindow : wtl::WindowBase<ENC>
+  template <Encoding ENC = Encoding::UTF16>
+  struct MainWindow : WindowBase<ENC>
   {
     // ---------------------------------- TYPES & CONSTANTS ---------------------------------
   
     //! \alias base - Define base type
-    using base = wtl::WindowBase<ENC>;
+    using base = WindowBase<ENC>;
   
     //! \alias type - Define own type
     using type = MainWindow<ENC>;
@@ -47,12 +51,12 @@ namespace hw1
     using wndclass_t = typename base::wndclass_t;
 
     //! \var encoding - Inherit window character encoding
-    static constexpr wtl::Encoding  encoding = base::encoding;
+    static constexpr Encoding  encoding = base::encoding;
   
     //! \enum ControlId - Define control Ids
-    enum class ControlId : wtl::int16
+    enum class ControlId : int16
     {
-      First = wtl::int16(wtl::WindowId::User),
+      First = int16(WindowId::User),
 
       Goodbye = First+1,    //!< Exit button
     };
@@ -60,12 +64,12 @@ namespace hw1
     /////////////////////////////////////////////////////////////////////////////////////////
     //! \struct ExitButton - Defines the 'exit' button control
     /////////////////////////////////////////////////////////////////////////////////////////
-    struct ExitButton : wtl::controls::Button<encoding>
+    struct ExitButton : Button<encoding>
     {
       // ---------------------------------- TYPES & CONSTANTS ---------------------------------
   
       //! \alias base - Define base type
-      using base = wtl::controls::Button<encoding>;
+      using base = Button<encoding>;
     
       // ----------------------------------- REPRESENTATION -----------------------------------
     
@@ -77,14 +81,14 @@ namespace hw1
       //! 
       //! \param[in] instance - Owning instance
       //! 
-      //! \throw wtl::platform_error - Unrecognised system window class
+      //! \throw platform_error - Unrecognised system window class
       /////////////////////////////////////////////////////////////////////////////////////////
       ExitButton(::HINSTANCE instance) : base(instance)
       {
         // Properties
-        this->Ident = wtl::window_id(ControlId::Goodbye);
-        this->Size = wtl::SizeL(100,50);
-        //this->Text = wtl::c_arr("Goodbye");
+        this->Ident = window_id(ControlId::Goodbye);
+        this->Size = SizeL(100,50);
+        //this->Text = c_arr("Goodbye");
       }
     };
 
@@ -104,29 +108,29 @@ namespace hw1
                                        GoodbyeBtn(instance)
     {
       // Properties
-      this->Size = wtl::SizeL(640,480);
-      this->Style = wtl::WindowStyle::OverlappedWindow;
-      this->StyleEx = wtl::WindowStyleEx::None;
+      this->Size    = SizeL(640,480);
+      this->Style   = WindowStyle::OverlappedWindow;
+      this->StyleEx = WindowStyleEx::None;
 
       // Events
-      this->Destroy += new wtl::events::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
-      this->Show += new wtl::events::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
+      this->Destroy += new DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
+      this->Show    += new ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
       // Controls
-      this->GoodbyeBtn.Click += new wtl::events::ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
-      this->GoodbyeBtn.Position = wtl::PointL(500,50);
+      this->GoodbyeBtn.Click += new ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
+      this->GoodbyeBtn.Position = PointL(500,50);
 
       // Actions: File
-      this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
-                                                                                        new wtl::OpenDocumentCommand<encoding>(*this),
-                                                                                        new wtl::SaveDocumentCommand<encoding>(*this),
-                                                                                        new wtl::ExitProgramCommand<encoding>(*this) });
+      this->ActionGroups += new ActionGroup<encoding>(CommandGroupId::File, { new NewDocumentCommand<encoding>(*this),
+                                                                              new OpenDocumentCommand<encoding>(*this),
+                                                                              new SaveDocumentCommand<encoding>(*this),
+                                                                              new ExitProgramCommand<encoding>(*this) });
       // Actions: Edit
-      this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
-                                                                                        new wtl::CopyClipboardCommand<encoding>(),
-                                                                                        new wtl::PasteClipboardCommand<encoding>() });
+      this->ActionGroups += new ActionGroup<encoding>(CommandGroupId::Edit, { new CutClipboardCommand<encoding>(),
+                                                                              new CopyClipboardCommand<encoding>(),
+                                                                              new PasteClipboardCommand<encoding>() });
       // Actions: Help
-      this->ActionGroups += new wtl::ActionGroup<encoding>(wtl::CommandGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
+      this->ActionGroups += new ActionGroup<encoding>(CommandGroupId::Help, { new AboutProgramCommand<encoding>(*this) });
     }
   
     // ----------------------------------- STATIC METHODS -----------------------------------
@@ -140,15 +144,15 @@ namespace hw1
     ///////////////////////////////////////////////////////////////////////////////
     static wndclass_t& getClass(::HINSTANCE instance) 
     {
-      static wndclass_t wc(instance,                                              //!< Registering module
-                           wtl::resource_name(L"MainWindowClass"),                //!< Class name
-                           wtl::ClassStyle::HRedraw|wtl::ClassStyle::VRedraw,     //!< Styles (Redraw upon resize)
-                           base::WndProc,                                         //!< Window procedure
-                           wtl::ResourceIdW(),                                    //!< Window menu 
-                           wtl::HCursor(wtl::SystemCursor::Arrow),                //!< Window cursor
-                           wtl::HBrush(wtl::Colour::Green),                       //!< Window background brush 
-                           wtl::HIcon(wtl::SystemIcon::WinLogo),                  //!< Large window icon 
-                           wtl::HIcon(wtl::SystemIcon::WinLogo));                 //!< Small window icon 
+      static wndclass_t wc(instance,                                    //!< Registering module
+                           resource_name(L"MainWindowClass"),           //!< Class name
+                           ClassStyle::HRedraw|ClassStyle::VRedraw,     //!< Styles (Redraw upon resize)
+                           base::WndProc,                               //!< Window procedure
+                           ResourceIdW(),                               //!< Window menu 
+                           HCursor(SystemCursor::Arrow),                //!< Window cursor
+                           HBrush(Colour::Green),                       //!< Window background brush 
+                           HIcon(SystemIcon::WinLogo),                  //!< Large window icon 
+                           HIcon(SystemIcon::WinLogo));                 //!< Small window icon 
 
       // Return singleton
       return wc;
@@ -165,19 +169,19 @@ namespace hw1
     //! \param[in] &args - Message arguments containing window creation properties 
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onCreate(wtl::events::CreateWindowEventArgs<encoding>& args) override
+    LResult  onCreate(CreateWindowEventArgs<encoding>& args) override
     { 
       // Populate window menu
-      this->Menu += this->ActionGroups[wtl::CommandGroupId::File];
-      this->Menu += this->ActionGroups[wtl::CommandGroupId::Edit];
-      this->Menu += this->ActionGroups[wtl::CommandGroupId::Help];
+      this->Menu += this->ActionGroups[CommandGroupId::File];
+      this->Menu += this->ActionGroups[CommandGroupId::Edit];
+      this->Menu += this->ActionGroups[CommandGroupId::Help];
 
       // Create 'exit' button
-      GoodbyeBtn.create(this, wtl::c_arr(L"Goodbye!"));  //, wtl::RectL(wtl::PointL(0,0), wtl::SizeL(0,0)));
+      GoodbyeBtn.create(this, c_arr(L"Goodbye!"));  
       Children.insert(GoodbyeBtn);
 
       // Show 'exit' button
-      GoodbyeBtn.show(wtl::ShowWindowFlags::Show);
+      GoodbyeBtn.show(ShowWindowFlags::Show);
 
       // Handled
       return 0; 
@@ -190,10 +194,10 @@ namespace hw1
     //! \param[in] &args - Message arguments
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onGoodbyeClick(wtl::events::ButtonClickEventArgs<encoding>& args) 
+    LResult  onGoodbyeClick(ButtonClickEventArgs<encoding>& args) 
     { 
       // Execute 'Exit Program' gui command
-      this->execute(wtl::CommandId::App_Exit);
+      this->execute(CommandId::App_Exit);
     
       // Handled
       return 0;     
@@ -205,13 +209,13 @@ namespace hw1
     //! 
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onDestroy() 
+    LResult  onDestroy() 
     { 
       // Destroy children
       GoodbyeBtn.destroy();
 
       // Close program
-      this->post<wtl::WindowMessage::QUIT>();
+      this->post<WindowMessage::QUIT>();
 
       // Handled
       return 0; 
@@ -224,11 +228,11 @@ namespace hw1
     //! \param[in,out] args - Message arguments containing drawing data
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    //wtl::LResult  onOwnerDraw(wtl::OwnerDrawEventArgs<encoding>& args)
+    //LResult  onOwnerDraw(OwnerDrawEventArgs<encoding>& args)
     //{
     //  if (args.Ident == ControlId::Goodbye)
     //  {
-    //    args.Graphics.fill(args.Rect, wtl::StockBrush::Green);
+    //    args.Graphics.fill(args.Rect, StockBrush::Green);
     //  }
 
     //  // Handled
@@ -242,31 +246,31 @@ namespace hw1
     //! \param[in,out] args - Message arguments containing drawing data
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onPaint(wtl::events::PaintWindowEventArgs<encoding>& args) override
+    LResult  onPaint(PaintWindowEventArgs<encoding>& args) override
     {
-      static wtl::int32 numEggs = wtl::Random::number(4,8);
+      static int32 numEggs = Random::number(4,8);
 
       // Draw background
-      args.Graphics.fill(args.Rect, wtl::StockBrush::Green);
+      args.Graphics.fill(args.Rect, StockBrush::Green);
 
       // Draw river
-      drawRiver(args.Graphics, wtl::PointL(), args.EraseBackground);
+      drawRiver(args.Graphics, PointL(), args.EraseBackground);
 
       // Draw 'Hello World' sign
-      drawSign(args.Graphics, wtl::PointL(80,80), args.EraseBackground);
+      drawSign(args.Graphics, PointL(80,80), args.EraseBackground);
 
       // Draw trees
-      drawTree(args.Graphics, wtl::PointL(450,125), args.EraseBackground);
-      drawTree(args.Graphics, wtl::PointL(350,130), args.EraseBackground);
-      drawTree(args.Graphics, wtl::PointL(425,155), args.EraseBackground);
-      drawTree(args.Graphics, wtl::PointL(360,180), args.EraseBackground);
-      drawTree(args.Graphics, wtl::PointL(410,210), args.EraseBackground);
+      drawTree(args.Graphics, PointL(450,125), args.EraseBackground);
+      drawTree(args.Graphics, PointL(350,130), args.EraseBackground);
+      drawTree(args.Graphics, PointL(425,155), args.EraseBackground);
+      drawTree(args.Graphics, PointL(360,180), args.EraseBackground);
+      drawTree(args.Graphics, PointL(410,210), args.EraseBackground);
 
       // Draw 'Easter Bunny' in front of sign
-      drawEasterBunny(args.Graphics, wtl::PointL(320,340), args.EraseBackground);
+      drawEasterBunny(args.Graphics, PointL(320,340), args.EraseBackground);
 
       // Draw 'Easter Eggs' next to easter bunny
-      drawEasterEggs(args.Graphics, wtl::PointL(400, 380), numEggs, args.EraseBackground);
+      drawEasterEggs(args.Graphics, PointL(400, 380), numEggs, args.EraseBackground);
 
       // Handled
       return 0; 
@@ -279,7 +283,7 @@ namespace hw1
     //! \param[in] &args - Message arguments 
     //! \return LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onShowWindow(wtl::events::ShowWindowEventArgs<encoding>& args) 
+    LResult  onShowWindow(ShowWindowEventArgs<encoding>& args) 
     { 
       // Handled
       return 0; 
@@ -294,31 +298,31 @@ namespace hw1
     //! \param[in] pt - Target
     //! \param[in] erase - Whether to erase before drawing
     ///////////////////////////////////////////////////////////////////////////////
-    void  drawEasterBunny(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
+    void  drawEasterBunny(DeviceContext& dc, PointL pt, bool erase)
     {
       // Set body colour
-      dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Brown);
-      dc += wtl::StockBrush::Wheat;
+      dc += HPen(PenStyle::Solid, 2, Colour::Brown);
+      dc += StockBrush::Wheat;
 
       // [BODY] Medium elogated ellipse
-      dc.ellipse( wtl::RectL(pt, wtl::SizeL(60,80)) );
+      dc.ellipse( RectL(pt, SizeL(60,80)) );
 
       // [HEAD] Small circle above
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(10,0), wtl::SizeL(40,-40)) );
+      dc.ellipse( RectL(pt+PointL(10,0), SizeL(40,-40)) );
     
       // [EARS] 2x Small circles above
-      dc += wtl::StockBrush::Snow;
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(0,-60), wtl::SizeL(20,30)) );
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(40,-60), wtl::SizeL(20,30)) );
+      dc += StockBrush::Snow;
+      dc.ellipse( RectL(pt+PointL(0,-60), SizeL(20,30)) );
+      dc.ellipse( RectL(pt+PointL(40,-60), SizeL(20,30)) );
 
       // [FEET] 2x Small circles below
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(0,40), wtl::SizeL(20,40)) );
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(40,40), wtl::SizeL(20,40)) );
+      dc.ellipse( RectL(pt+PointL(0,40), SizeL(20,40)) );
+      dc.ellipse( RectL(pt+PointL(40,40), SizeL(20,40)) );
 
       // [EYES] 2x Small circles 
-      //dc += wtl::StockBrush::Red;
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(30,-30), wtl::SizeL(10,10)) );
-      dc.ellipse( wtl::RectL(pt+wtl::PointL(15,-30), wtl::SizeL(10,10)) );
+      //dc += StockBrush::Red;
+      dc.ellipse( RectL(pt+PointL(30,-30), SizeL(10,10)) );
+      dc.ellipse( RectL(pt+PointL(15,-30), SizeL(10,10)) );
 
       // Cleanup
       dc.clear();
@@ -333,28 +337,28 @@ namespace hw1
     //! \param[in] numEggs - Number of eggs to draw
     //! \param[in] erase - Whether to erase before drawing
     ///////////////////////////////////////////////////////////////////////////////
-    void  drawEasterEggs(wtl::DeviceContext& dc, wtl::PointL pt, const wtl::int32 numEggs, bool erase)
+    void  drawEasterEggs(DeviceContext& dc, PointL pt, const int32 numEggs, bool erase)
     {
       // Draw egg backgrounds
-      dc += wtl::DrawingMode::Opaque;
+      dc += DrawingMode::Opaque;
 
       // [EGGS] Draw eggs with random colours
-      for (wtl::int32 idx = 0; idx < numEggs; ++idx)
+      for (int32 idx = 0; idx < numEggs; ++idx)
       {
-        static constexpr wtl::Colour eggColours[] = {wtl::Colour::Beige, wtl::Colour::Honey, wtl::Colour::Gold, wtl::Colour::Green, wtl::Colour::Magenta, wtl::Colour::Rose,
-                                                     wtl::Colour::Yellow, wtl::Colour::SkyBlue, wtl::Colour::Orange, wtl::Colour::Leaves, wtl::Colour::Teal};
+        static constexpr Colour eggColours[] = { Colour::Beige, Colour::Honey, Colour::Gold, Colour::Green, Colour::Magenta, Colour::Rose,
+                                                 Colour::Yellow, Colour::SkyBlue, Colour::Orange, Colour::Leaves, Colour::Teal };
 
         // Randomize egg properties
-        wtl::HBrush eggBrush(wtl::random_enum<wtl::HatchStyle>(), wtl::random_element(eggColours));
-        wtl::HPen eggPen(wtl::PenStyle::Solid, 2, wtl::random_element(eggColours));
+        HBrush eggBrush(random_enum<HatchStyle>(), random_element(eggColours));
+        HPen eggPen(PenStyle::Solid, 2, random_element(eggColours));
       
         // Set egg colour
-        dc.setBackColour(wtl::random_element(eggColours));
+        dc.setBackColour(random_element(eggColours));
         dc += eggPen;
         dc += eggBrush;
 
         // [EGG] Draw small oval
-        dc.ellipse( wtl::RectL(pt+wtl::PointL(idx*30,0), wtl::SizeL(20,30)) );
+        dc.ellipse( RectL(pt+PointL(idx*30,0), SizeL(20,30)) );
 
         // Cleanup
         dc.clear();
@@ -371,11 +375,11 @@ namespace hw1
     //! \param[in] pt - Ignored
     //! \param[in] erase - Whether to erase before drawing
     ///////////////////////////////////////////////////////////////////////////////
-    void  drawRiver(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
+    void  drawRiver(DeviceContext& dc, PointL pt, bool erase)
     {
       // Light blue river & dark highlights
-      dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Blue);
-      dc += wtl::StockBrush::Cyan;
+      dc += HPen(PenStyle::Solid, 2, Colour::Blue);
+      dc += StockBrush::Cyan;
 
       ::POINT river[] = { {0, 300},   {200, 280}, {400, 260}, {640, 250},
                           {640, 300}, {480, 310}, {280, 360}, {120, 420},  {0, 430} };
@@ -395,25 +399,25 @@ namespace hw1
     //! \param[in] pt - Target
     //! \param[in] erase - Whether to erase before drawing
     ///////////////////////////////////////////////////////////////////////////////
-    void  drawTree(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
+    void  drawTree(DeviceContext& dc, PointL pt, bool erase)
     {
       // Set dark green outline + light green interior
-      dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Forest);
-      dc += wtl::StockBrush::Leaves;
+      dc += HPen(PenStyle::Solid, 2, Colour::Forest);
+      dc += StockBrush::Leaves;
 
       // [LEAVES] Small green triangle
-      dc.triangle( wtl::TriangleL(pt, 50, 50) );
+      dc.triangle( TriangleL(pt, 50, 50) );
 
       // Set brown interior + black outline
-      static wtl::HBrush trunkBrush(wtl::HatchStyle::ForwardDiagonal, wtl::Colour::Black);
+      static HBrush trunkBrush(HatchStyle::ForwardDiagonal, Colour::Black);
       dc += trunkBrush;  
 
       // Set brown interior + black outline
-      dc.setBackColour(wtl::Colour::Brown);
-      dc += wtl::DrawingMode::Opaque;
+      dc.setBackColour(Colour::Brown);
+      dc += DrawingMode::Opaque;
     
       // [TRUNK] Small brown square
-      dc.rect( wtl::RectL(pt + wtl::PointL(10,2), wtl::SizeL(30,30)) );
+      dc.rect( RectL(pt + PointL(10,2), SizeL(30,30)) );
 
       // Cleanup
       dc.clear();
@@ -427,41 +431,41 @@ namespace hw1
     //! \param[in] pt - Top left point of sign
     //! \param[in] erase - Whether to erase before drawing
     ///////////////////////////////////////////////////////////////////////////////
-    void  drawSign(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
+    void  drawSign(DeviceContext& dc, PointL pt, bool erase)
     {
       // Large text
-      static const wtl::HFont largeFont = wtl::DeviceContext::ScreenDC.getFont(wtl::c_arr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
+      static const HFont largeFont = DeviceContext::ScreenDC.getFont(c_arr("MS Shell Dlg 2"), 16, FontWeight::Bold);
       dc += largeFont;
 
       // [SIGN] Black outline + brown interior
-      dc += wtl::HPen(wtl::PenStyle::Solid, 2, wtl::Colour::Black);
-      dc += wtl::StockBrush::Brown;
+      dc += HPen(PenStyle::Solid, 2, Colour::Black);
+      dc += StockBrush::Brown;
 
       // [SIGN] Large rectangle
-      wtl::RectL signRect(pt, wtl::SizeL(200,140));
+      RectL signRect(pt, SizeL(200,140));
       dc.rect(signRect);
     
       // Set brown interior + black outline
-      static wtl::HBrush legBrush(wtl::HatchStyle::CrossDiagonal, wtl::Colour::Black);
+      static HBrush legBrush(HatchStyle::CrossDiagonal, Colour::Black);
       dc += legBrush;  
 
       // Set brown interior + black outline
-      dc.setBackColour(wtl::Colour::Brown);
-      dc += wtl::DrawingMode::Opaque;
+      dc.setBackColour(Colour::Brown);
+      dc += DrawingMode::Opaque;
     
       // [LEGS] 2x small rectangles below sign
-      dc.rect( wtl::RectL(pt + wtl::PointL(30,140), wtl::SizeL(40,30)) );
-      dc.rect( wtl::RectL(pt + wtl::PointL(130,140), wtl::SizeL(40,30)) );
+      dc.rect( RectL(pt + PointL(30,140), SizeL(40,30)) );
+      dc.rect( RectL(pt + PointL(130,140), SizeL(40,30)) );
 
       // Transparent white text
-      dc += wtl::DrawingMode::Transparent;
-      dc.setTextColour(wtl::Colour::White);
+      dc += DrawingMode::Transparent;
+      dc.setTextColour(Colour::White);
     
       // [TEXT] Draw sign text
-      dc.write(wtl::c_arr("Hi Mum! Hi Dad!" "\n\n" 
-                          "I love you"      "\n\n" 
-                          "Happy Easter!"   "\n\n"
-                          "From Nick"), signRect, wtl::DrawTextFlags::Centre); 
+      dc.write(c_arr("Hi Mum! Hi Dad!" "\n\n" 
+                     "I love you"      "\n\n" 
+                     "Happy Easter!"   "\n\n"
+                     "From Nick"), signRect, DrawTextFlags::Centre); 
 
       // Cleanup
       dc.clear();
