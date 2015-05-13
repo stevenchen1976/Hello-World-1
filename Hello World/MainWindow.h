@@ -88,8 +88,35 @@ namespace hw1
         // Properties
         this->Ident = window_id(ControlId::Goodbye);
         this->Size = SizeL(100,50);
+        this->Position = PointL(500,50);
         //this->Text = c_arr("Goodbye");
+
+        // Events
+        this->Click += new ButtonClickEventHandler<base::encoding>(this, &ExitButton::onClick);
       }
+      
+      // ----------------------------------- STATIC METHODS -----------------------------------
+
+      // ---------------------------------- ACCESSOR METHODS ----------------------------------
+
+      // ----------------------------------- MUTATOR METHODS ----------------------------------
+
+      ///////////////////////////////////////////////////////////////////////////////
+      // ExitButton::onClick
+      //! Exits the program
+      //! 
+      //! \param[in] &args - Message arguments
+      //! \return LResult - Message result and routing
+      ///////////////////////////////////////////////////////////////////////////////
+      LResult  onClick(ButtonClickEventArgs<encoding>& args) 
+      { 
+        // Execute 'Exit Program' gui command
+        this->execute(CommandId::App_Exit);
+    
+        // Handled
+        return 0;     
+      }
+
     };
 
     // ----------------------------------- REPRESENTATION -----------------------------------
@@ -116,21 +143,17 @@ namespace hw1
       this->Destroy += new DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
       this->Show    += new ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
-      // Controls
-      this->GoodbyeBtn.Click += new ButtonClickEventHandler<base::encoding>(this, &MainWindow::onGoodbyeClick);
-      this->GoodbyeBtn.Position = PointL(500,50);
-
       // Actions: File
-      this->ActionGroups += new ActionGroup<encoding>(CommandGroupId::File, { new NewDocumentCommand<encoding>(*this),
+      base::ActionGroups += new ActionGroup<encoding>(CommandGroupId::File, { new NewDocumentCommand<encoding>(*this),
                                                                               new OpenDocumentCommand<encoding>(*this),
                                                                               new SaveDocumentCommand<encoding>(*this),
                                                                               new ExitProgramCommand<encoding>(*this) });
       // Actions: Edit
-      this->ActionGroups += new ActionGroup<encoding>(CommandGroupId::Edit, { new CutClipboardCommand<encoding>(),
+      base::ActionGroups += new ActionGroup<encoding>(CommandGroupId::Edit, { new CutClipboardCommand<encoding>(),
                                                                               new CopyClipboardCommand<encoding>(),
                                                                               new PasteClipboardCommand<encoding>() });
       // Actions: Help
-      this->ActionGroups += new ActionGroup<encoding>(CommandGroupId::Help, { new AboutProgramCommand<encoding>(*this) });
+      base::ActionGroups += new ActionGroup<encoding>(CommandGroupId::Help, { new AboutProgramCommand<encoding>(*this) });
     }
   
     // ----------------------------------- STATIC METHODS -----------------------------------
@@ -172,13 +195,13 @@ namespace hw1
     LResult  onCreate(CreateWindowEventArgs<encoding>& args) override
     { 
       // Populate window menu
-      this->Menu += this->ActionGroups[CommandGroupId::File];
-      this->Menu += this->ActionGroups[CommandGroupId::Edit];
-      this->Menu += this->ActionGroups[CommandGroupId::Help];
+      this->Menu += base::ActionGroups[CommandGroupId::File];
+      this->Menu += base::ActionGroups[CommandGroupId::Edit];
+      this->Menu += base::ActionGroups[CommandGroupId::Help];
 
       // Create 'exit' button
       GoodbyeBtn.create(this, c_arr(L"Goodbye!"));  
-      Children.insert(GoodbyeBtn);
+      this->Children.insert(GoodbyeBtn);
 
       // Show 'exit' button
       GoodbyeBtn.show(ShowWindowFlags::Show);
@@ -187,22 +210,6 @@ namespace hw1
       return 0; 
     }
   
-    ///////////////////////////////////////////////////////////////////////////////
-    // MainWindow::onGoodbyeClick
-    //! Called in response to clicking 'GoodBye' button
-    //! 
-    //! \param[in] &args - Message arguments
-    //! \return LResult - Message result and routing
-    ///////////////////////////////////////////////////////////////////////////////
-    LResult  onGoodbyeClick(ButtonClickEventArgs<encoding>& args) 
-    { 
-      // Execute 'Exit Program' gui command
-      this->execute(CommandId::App_Exit);
-    
-      // Handled
-      return 0;     
-    }
-
     ///////////////////////////////////////////////////////////////////////////////
     // MainWindow::onDestroy
     //! Called during window destruction
