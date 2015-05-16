@@ -86,11 +86,12 @@ namespace hw1
       ExitButton(::HINSTANCE instance) : base(instance)
       {
         // Properties
-        this->Ident = window_id(ControlId::Goodbye);
-        this->Size = SizeL(100,50);
+        this->Ident    = window_id(ControlId::Goodbye);
         this->Position = PointL(500,50);
-        //this->Text = c_arr("Goodbye");
-
+        this->Style   |= WindowStyle::Visible;
+        this->Size     = SizeL(100,50);
+        this->Text     = c_str(L"Goodbye");
+        
         // Events
         this->Click += new ButtonClickEventHandler<base::encoding>(this, &ExitButton::onClick);
       }
@@ -111,7 +112,7 @@ namespace hw1
       LResult  onClick(ButtonClickEventArgs<encoding>& args) 
       { 
         // Execute 'Exit Program' gui command
-        this->execute(CommandId::App_Exit);
+        this->execute(ActionId::App_Exit);
     
         // Handled
         return 0;     
@@ -138,22 +139,23 @@ namespace hw1
       this->Size    = SizeL(640,480);
       this->Style   = WindowStyle::OverlappedWindow;
       this->StyleEx = WindowStyleEx::None;
-
+      this->Text    = c_str(L"Hello World");
+      
       // Events
       this->Destroy += new DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
       this->Show    += new ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
       // Actions: File
-      base::ActionGroups += new ActionGroup<encoding>(CommandGroupId::File, { new NewDocumentCommand<encoding>(*this),
-                                                                              new OpenDocumentCommand<encoding>(*this),
-                                                                              new SaveDocumentCommand<encoding>(*this),
-                                                                              new ExitProgramCommand<encoding>(*this) });
+      base::ActionGroups += new ActionGroup<encoding>(ActionGroupId::File, { new NewDocumentCommand<encoding>(*this),
+                                                                             new OpenDocumentCommand<encoding>(*this),
+                                                                             new SaveDocumentCommand<encoding>(*this),
+                                                                             new ExitProgramCommand<encoding>(*this) });
       // Actions: Edit
-      base::ActionGroups += new ActionGroup<encoding>(CommandGroupId::Edit, { new CutClipboardCommand<encoding>(),
-                                                                              new CopyClipboardCommand<encoding>(),
-                                                                              new PasteClipboardCommand<encoding>() });
+      base::ActionGroups += new ActionGroup<encoding>(ActionGroupId::Edit, { new CutClipboardCommand<encoding>(),
+                                                                             new CopyClipboardCommand<encoding>(),
+                                                                             new PasteClipboardCommand<encoding>() });
       // Actions: Help
-      base::ActionGroups += new ActionGroup<encoding>(CommandGroupId::Help, { new AboutProgramCommand<encoding>(*this) });
+      base::ActionGroups += new ActionGroup<encoding>(ActionGroupId::Help, { new AboutProgramCommand<encoding>(*this) });
     }
   
     // ----------------------------------- STATIC METHODS -----------------------------------
@@ -195,13 +197,12 @@ namespace hw1
     LResult  onCreate(CreateWindowEventArgs<encoding>& args) override
     { 
       // Populate window menu
-      this->Menu += base::ActionGroups[CommandGroupId::File];
-      this->Menu += base::ActionGroups[CommandGroupId::Edit];
-      this->Menu += base::ActionGroups[CommandGroupId::Help];
+      this->Menu += base::ActionGroups[ActionGroupId::File];
+      this->Menu += base::ActionGroups[ActionGroupId::Edit];
+      this->Menu += base::ActionGroups[ActionGroupId::Help];
 
-      // Create 'exit' button
-      GoodbyeBtn.create(this, c_arr(L"Goodbye!"));  
-      this->Children.insert(GoodbyeBtn);
+      // Create 'exit' button child ctrl
+      this->Children.create(GoodbyeBtn);
 
       // Show 'exit' button
       GoodbyeBtn.show(ShowWindowFlags::Show);

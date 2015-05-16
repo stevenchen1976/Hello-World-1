@@ -56,7 +56,7 @@ namespace hw1
     void onStart(ShowWindowFlags mode) override
     {
       // Create window
-      this->Window.create(nullptr, c_arr(L"Hello World")); 
+      this->Window.create();
     
       // Show window
       this->Window.show(mode);

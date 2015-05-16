@@ -28,7 +28,7 @@ wtl::int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cm
   }
   catch (std::exception& e)
   {
-    wtl::cdebug.log(HERE, e);
+    wtl::cdebug << wtl::exception_log(HERE,e) << wtl::endl;
     return -1;
   }
 }
