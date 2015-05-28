@@ -87,6 +87,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuildTarget.h" />
     <ClInclude Include="HelloWorldApp.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="resource.h" />

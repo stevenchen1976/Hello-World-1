@@ -8,11 +8,16 @@
 #ifndef HELLO_WORLD_H
 #define HELLO_WORLD_H
 
+// Target Platform v5.01 (WindowsXP)
+#include <WinSDKVer.h>
+#define _WIN32_WINNT    _WIN32_WINNT_WINXP
+#include <SDKDDKVer.h>
+
 #include "wtl/WTL.hpp"                      //!< Windows Template Library
 #include "wtl/modules/Application.hpp"      //!< wtl::Application
 #include "MainWindow.h"                     //!< hw1::Mainwindow
 
-using namespace wtl;
+//using namespace wtl;
 
 //! \namespace hw1 - Hello World v1 (Drawing demonstration)
 namespace hw1
@@ -21,14 +26,20 @@ namespace hw1
   ///////////////////////////////////////////////////////////////////////////////
   //! \struct HelloWorldApp - Encapsulates the 'Hello World' program
   ///////////////////////////////////////////////////////////////////////////////
-  template <Encoding ENC = Encoding::UTF16>
-  struct HelloWorldApp : Application<ENC,MainWindow<ENC>>
+  template <wtl::Encoding ENC = wtl::Encoding::UTF16>
+  struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
   {
     // ---------------------------------- TYPES & CONSTANTS ---------------------------------
 
     //! \alias base - Define base type
-    using base = Application<ENC,MainWindow<ENC>>;
-
+    using base = wtl::Application<ENC,MainWindow<ENC>>;
+    
+    //! \alias type - Define own type
+    using type = HelloWorldApp<ENC>;
+    
+    //! \var encoding - Define app character encoding
+    static constexpr wtl::Encoding  encoding = ENC;
+  
     // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -42,6 +53,28 @@ namespace hw1
     }
 
     // ---------------------------------- ACCESSOR METHODS ----------------------------------
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // HelloWorldApp::name const 
+    //! Get the application name
+    //!
+    //! \return const char_t* - Full application name
+    /////////////////////////////////////////////////////////////////////////////////////////
+    const char_t* name() const override
+    {
+      return wtl::getValue<ENC>("Hello World 1", L"Hello World 1");
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // HelloWorldApp::version const 
+    //! Get the application version
+    //!
+    //! \return const char_t* - Version string
+    /////////////////////////////////////////////////////////////////////////////////////////
+    const char_t* version() const override 
+    {
+      return wtl::getValue<ENC>("v1.00", L"v1.00");
+    }
 
     // ----------------------------------- MUTATOR METHODS ----------------------------------  
   protected:
@@ -51,9 +84,9 @@ namespace hw1
     //! 
     //! \param[in] mode - Initial display mode
     //!
-    //! \throw platform_error - Unable to create window
+    //! \throw wtl::platform_error - Unable to create window
     ///////////////////////////////////////////////////////////////////////////////
-    void onStart(ShowWindowFlags mode) override
+    void onStart(wtl::ShowWindowFlags mode) override
     {
       // Create window
       this->Window.create();
@@ -68,7 +101,7 @@ namespace hw1
 
 
   //! \alias application_t - Define ANSI/UNICODE application type according to build settings (Size of TCHAR)
-  using application_t = HelloWorldApp<default_encoding<TCHAR>::value>;
+  using application_t = HelloWorldApp<wtl::default_encoding_t<::TCHAR>::value>;
 
 } // namespace
 

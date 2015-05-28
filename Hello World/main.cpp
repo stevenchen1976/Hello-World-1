@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "HelloWorldApp.h"   
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // ::_tWinMain
 //! Narrow/wide char entry point
@@ -15,16 +14,16 @@
 //! \param[in] instance - Program instance 
 //! \param[in] prevInstance - Legacy
 //! \param[in] cmdLine - Command line
-//! \param[in] nCmdShow - Desired display mode
+//! \param[in] showMode - Desired display mode
 ////////////////////////////////////////////////////////////////////////////////
-wtl::int32 WINAPI _tWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR cmdLine, wtl::int32 nCmdShow)
+int32_t WINAPI _tWinMain(::HINSTANCE instance, ::HINSTANCE prevInstance, PWSTR cmdLine, int32_t showMode)
 {
   try
   {
     hw1::application_t program(instance);
   
     // Run program and return result
-    return program.run();
+    return program.run(cmdLine, static_cast<wtl::ShowWindowFlags>(showMode));
   }
   catch (std::exception& e)
   {
