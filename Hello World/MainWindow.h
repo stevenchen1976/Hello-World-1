@@ -28,7 +28,7 @@ namespace hw1
   ///////////////////////////////////////////////////////////////////////////////
   //! \struct MainWindow - Main window class
   //! 
-  //! \tparam ENC - Window charactrer encoding (UTF16 if unspecified)
+  //! \tparam ENC - Window charactrer encoding (Default is UTF-16)
   ///////////////////////////////////////////////////////////////////////////////
   template <wtl::Encoding ENC = wtl::Encoding::UTF16>
   struct MainWindow : wtl::WindowBase<ENC>
@@ -70,9 +70,9 @@ namespace hw1
 
       //! \alias base - Define base type
       using base = wtl::Button<encoding>;
-    
+      
       // ----------------------------------- REPRESENTATION -----------------------------------
-    
+      
       // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
     
       /////////////////////////////////////////////////////////////////////////////////////////

@@ -25,17 +25,19 @@ namespace hw1
 
   ///////////////////////////////////////////////////////////////////////////////
   //! \struct HelloWorldApp - Encapsulates the 'Hello World' program
+  //! 
+  //! \tparam ENC - Window charactrer encoding (Default is UTF-16)
   ///////////////////////////////////////////////////////////////////////////////
   template <wtl::Encoding ENC = wtl::Encoding::UTF16>
-  struct HelloWorldApp : wtl::Application<ENC,MainWindow<ENC>>
+  struct HelloWorldApp : wtl::Application<MainWindow<ENC>>
   {
     // ---------------------------------- TYPES & CONSTANTS ---------------------------------
-
-    //! \alias base - Define base type
-    using base = wtl::Application<ENC,MainWindow<ENC>>;
     
     //! \alias type - Define own type
     using type = HelloWorldApp<ENC>;
+    
+    //! \alias base - Define base type
+    using base = wtl::Application<MainWindow<ENC>>;
     
     //! \var encoding - Define app character encoding
     static constexpr wtl::Encoding  encoding = ENC;
