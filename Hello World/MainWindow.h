@@ -112,7 +112,7 @@ namespace hw1
       wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding>& args) 
       { 
         // Execute 'Exit Program' gui command
-        this->execute(wtl::ActionId::App_Exit);
+        this->execute(wtl::CommandId::App_Exit);
     
         // Handled
         return 0;     
@@ -145,17 +145,17 @@ namespace hw1
       this->Destroy += new wtl::DestroyWindowEventHandler<encoding>(this, &MainWindow::onDestroy);
       this->Show    += new wtl::ShowWindowEventHandler<encoding>(this, &MainWindow::onShowWindow);
 
-      // Actions: File
-      base::ActionGroups += new wtl::ActionGroup<encoding>(wtl::ActionGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
+      // Commands: File
+      base::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
                                                                                        new wtl::OpenDocumentCommand<encoding>(*this),
                                                                                        new wtl::SaveDocumentCommand<encoding>(*this),
                                                                                        new wtl::ExitProgramCommand<encoding>(*this) });
-      // Actions: Edit
-      base::ActionGroups += new wtl::ActionGroup<encoding>(wtl::ActionGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
+      // Commands: Edit
+      base::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
                                                                                        new wtl::CopyClipboardCommand<encoding>(),
                                                                                        new wtl::PasteClipboardCommand<encoding>() });
-      // Actions: Help
-      base::ActionGroups += new wtl::ActionGroup<encoding>(wtl::ActionGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
+      // Commands: Help
+      base::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
     }
   
     // ----------------------------------- STATIC METHODS -----------------------------------
@@ -197,9 +197,9 @@ namespace hw1
     wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
     { 
       // Populate window menu
-      this->Menu += base::ActionGroups[wtl::ActionGroupId::File];
-      this->Menu += base::ActionGroups[wtl::ActionGroupId::Edit];
-      this->Menu += base::ActionGroups[wtl::ActionGroupId::Help];
+      this->Menu += base::CommandGroups[wtl::CommandGroupId::File];
+      this->Menu += base::CommandGroups[wtl::CommandGroupId::Edit];
+      this->Menu += base::CommandGroups[wtl::CommandGroupId::Help];
 
       // Create 'exit' button child ctrl
       this->Children.create(GoodbyeBtn);
