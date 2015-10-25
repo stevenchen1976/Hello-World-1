@@ -106,10 +106,10 @@ namespace hw1
       // ExitButton::onClick
       //! Exits the program
       //! 
-      //! \param[in] &args - Message arguments
+      //! \param[in] args - Message arguments
       //! \return wtl::LResult - Message result and routing
       ///////////////////////////////////////////////////////////////////////////////
-      wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding>&& args) 
+      wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding> args) 
       { 
         // Execute 'Exit Program' gui command
         this->execute(wtl::CommandId::App_Exit);
@@ -117,7 +117,6 @@ namespace hw1
         // Handled
         return 0;     
       }
-
     };
 
     // ----------------------------------- REPRESENTATION -----------------------------------
@@ -147,13 +146,13 @@ namespace hw1
 
       // Commands: File
       base::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::File, { new wtl::NewDocumentCommand<encoding>(*this),
-                                                                                       new wtl::OpenDocumentCommand<encoding>(*this),
-                                                                                       new wtl::SaveDocumentCommand<encoding>(*this),
-                                                                                       new wtl::ExitProgramCommand<encoding>(*this) });
+                                                                                          new wtl::OpenDocumentCommand<encoding>(*this),
+                                                                                          new wtl::SaveDocumentCommand<encoding>(*this),
+                                                                                          new wtl::ExitProgramCommand<encoding>(*this) });
       // Commands: Edit
       base::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::Edit, { new wtl::CutClipboardCommand<encoding>(),
-                                                                                       new wtl::CopyClipboardCommand<encoding>(),
-                                                                                       new wtl::PasteClipboardCommand<encoding>() });
+                                                                                          new wtl::CopyClipboardCommand<encoding>(),
+                                                                                          new wtl::PasteClipboardCommand<encoding>() });
       // Commands: Help
       base::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::Help, { new wtl::AboutProgramCommand<encoding>(*this) });
     }
@@ -191,10 +190,10 @@ namespace hw1
     // MainWindow::onCreate
     //! Called during window creation to modify properties on the fly
     //! 
-    //! \param[in] &args - Message arguments containing window creation properties 
+    //! \param[in,out] &args - Message arguments containing window creation properties 
     //! \return wtl::LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>&& args) override
+    wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
     { 
       // Populate window menu
       this->Menu += base::CommandGroups[wtl::CommandGroupId::File];
@@ -254,7 +253,7 @@ namespace hw1
     //! \param[in,out] args - Message arguments containing drawing data
     //! \return wtl::LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>&& args) override
+    wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>& args) override
     {
       static int32_t numEggs = wtl::Random::number(4,8);
 
@@ -288,10 +287,10 @@ namespace hw1
     // MainWindow::onShowWindow
     //! Called when window is being shown or hidden
     //! 
-    //! \param[in] &args - Message arguments 
+    //! \param[in] args - Message arguments 
     //! \return wtl::LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onShowWindow(wtl::ShowWindowEventArgs<encoding>&& args) 
+    wtl::LResult  onShowWindow(wtl::ShowWindowEventArgs<encoding> args) 
     { 
       // Handled
       return 0; 
