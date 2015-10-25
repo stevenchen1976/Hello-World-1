@@ -9,9 +9,9 @@
 #define HELLO_WORLD_H
 
 // Target Platform v5.01 (WindowsXP)
-#include <WinSDKVer.h>
+//#include <WinSDKVer.h>
 #define _WIN32_WINNT    _WIN32_WINNT_WINXP
-#include <SDKDDKVer.h>
+//#include <SDKDDKVer.h>
 
 #include "wtl/WTL.hpp"                      //!< Windows Template Library
 #include "wtl/modules/Application.hpp"      //!< wtl::Application
@@ -39,6 +39,9 @@ namespace hw1
     //! \alias base - Define base type
     using base = wtl::Application<MainWindow<ENC>>;
     
+    //! \alias char_t - Inherit character type
+    using char_t = typename base::char_t;
+
     //! \var encoding - Define app character encoding
     static constexpr wtl::Encoding  encoding = ENC;
   

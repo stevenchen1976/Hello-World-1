@@ -109,7 +109,7 @@ namespace hw1
       //! \param[in] &args - Message arguments
       //! \return wtl::LResult - Message result and routing
       ///////////////////////////////////////////////////////////////////////////////
-      wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding>& args) 
+      wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding>&& args) 
       { 
         // Execute 'Exit Program' gui command
         this->execute(wtl::CommandId::App_Exit);
@@ -194,7 +194,7 @@ namespace hw1
     //! \param[in] &args - Message arguments containing window creation properties 
     //! \return wtl::LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>& args) override
+    wtl::LResult  onCreate(wtl::CreateWindowEventArgs<encoding>&& args) override
     { 
       // Populate window menu
       this->Menu += base::CommandGroups[wtl::CommandGroupId::File];
@@ -254,7 +254,7 @@ namespace hw1
     //! \param[in,out] args - Message arguments containing drawing data
     //! \return wtl::LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>& args) override
+    wtl::LResult  onPaint(wtl::PaintWindowEventArgs<encoding>&& args) override
     {
       static int32_t numEggs = wtl::Random::number(4,8);
 
@@ -291,7 +291,7 @@ namespace hw1
     //! \param[in] &args - Message arguments 
     //! \return wtl::LResult - Message result and routing
     ///////////////////////////////////////////////////////////////////////////////
-    wtl::LResult  onShowWindow(wtl::ShowWindowEventArgs<encoding>& args) 
+    wtl::LResult  onShowWindow(wtl::ShowWindowEventArgs<encoding>&& args) 
     { 
       // Handled
       return 0; 
