@@ -346,6 +346,9 @@ namespace hw1
     ///////////////////////////////////////////////////////////////////////////////
     void  drawEasterEggs(wtl::DeviceContext& dc, wtl::PointL pt, const int32_t numEggs, bool erase)
     {
+      static constexpr wtl::HatchStyle styles[] = { wtl::HatchStyle::Horizontal, wtl::HatchStyle::Vertical, 
+                                                    wtl::HatchStyle::ForwardDiagonal, wtl::HatchStyle::BackwardDiagonal, 
+                                                    wtl::HatchStyle::Cross, wtl::HatchStyle::CrossDiagonal };
       // Draw egg backgrounds
       dc += wtl::DrawingMode::Opaque;
 
@@ -356,7 +359,7 @@ namespace hw1
                                                       wtl::Colour::Yellow, wtl::Colour::SkyBlue, wtl::Colour::Orange, wtl::Colour::Leaves, wtl::Colour::Teal };
 
         // Randomize egg properties
-        wtl::HBrush eggBrush(wtl::random_enum<wtl::HatchStyle>(), wtl::random_element(eggColours));
+        wtl::HBrush eggBrush(wtl::random_element(styles), wtl::random_element(eggColours));
         wtl::HPen eggPen(wtl::PenStyle::Solid, 2, wtl::random_element(eggColours));
       
         // Set egg colour
