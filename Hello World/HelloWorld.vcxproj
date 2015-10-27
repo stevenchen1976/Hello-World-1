@@ -38,7 +38,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">
-    <PlatformToolset>GCC</PlatformToolset>
+    <PlatformToolset>Clang</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|MinGW'">
     <PlatformToolset>Clang</PlatformToolset>
@@ -66,10 +66,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">
     <MinGWInstallFolder>f:\MinGW</MinGWInstallFolder>
     <LLVMInstallFolder>d:\LLVM</LLVMInstallFolder>
-    <LibraryPath>$(LLVMInstallFolder)\lib;D:\My Projects\WTL\Debug</LibraryPath>
-    <ExecutablePath>$(MinGWInstallFolder)\bin;$(LLVMInstallFolder)\bin;$(MSBuild_ExecutablePath);$(PATH);</ExecutablePath>
-    <IncludePath>$(MinGWInstallFolder)\include;f:\MinGW\include\C++;D:\My Projects\WTL</IncludePath>
     <StdIncludeFolder>f:\MinGW\include\C++</StdIncludeFolder>
+    <LibraryPath>f:\MinGW\lib;D:\My Projects\WTL\MinGW\Debug</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -114,8 +112,10 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
       <ExceptionHandling>Enabled</ExceptionHandling>
-      <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <DebugInformationFormat>DWARF2</DebugInformationFormat>
       <AdditionalOptions>-D _UNICODE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>D:\My Projects\WTL</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
