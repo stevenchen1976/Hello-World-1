@@ -68,6 +68,7 @@
     <LLVMInstallFolder>d:\LLVM</LLVMInstallFolder>
     <StdIncludeFolder>f:\MinGW\include\C++</StdIncludeFolder>
     <LibraryPath>f:\MinGW\lib;D:\My Projects\WTL\MinGW\Debug</LibraryPath>
+    <ExecutablePath>f:\MinGW\bin;D:\LLVM\bin;$(MSBuild_ExecutablePath);$(PATH);D:\MSVC2015\VC\bin;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\bin</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,7 +106,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">
     <Link>
-      <AdditionalDependencies>WTL.a</AdditionalDependencies>
+      <AdditionalDependencies>D:\My Projects\WTL\MinGW\Debug\libWTL.a</AdditionalDependencies>
+      <AdditionalOptions>-fno-use-linker-plugin %(AdditionalOptions)</AdditionalOptions>
+      <LibraryDependencies />
+      <SharedLibrarySearchPath>$(MinGWInstallFolder)\lib\x86</SharedLibrarySearchPath>
+      <AdditionalLibraryDirectories>$(MinGWInstallFolder)\lib\x86</AdditionalLibraryDirectories>
+      <ThreadSupport>false</ThreadSupport>
+      <Win32Build>false</Win32Build>
     </Link>
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
@@ -117,6 +124,13 @@
       <AdditionalIncludeDirectories>D:\My Projects\WTL</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>D:\My Projects\WTL;f:\MinGW\include</AdditionalIncludeDirectories>
+      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
+      <PreprocessorDefinitions>UNICODE;_UNICODE</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <ShowProgress>true</ShowProgress>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -128,7 +142,11 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="HelloWorld.rc" />
+    <ResourceCompile Include="HelloWorld.rc">
+      <ResourceOutputFileName Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">$(IntDir)%(Filename).o</ResourceOutputFileName>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'"> --use-temp-file -c 1251 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">d:\MYPROJ~1\WTL;f:\MinGW\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

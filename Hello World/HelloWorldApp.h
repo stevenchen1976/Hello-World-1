@@ -67,7 +67,7 @@ namespace hw1
     /////////////////////////////////////////////////////////////////////////////////////////
     const char_t* name() const override
     {
-      return wtl::getValue<ENC>("Hello World 1", L"Hello World 1");
+      return wtl::choose<ENC>("Hello World 1", L"Hello World 1");
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ namespace hw1
     /////////////////////////////////////////////////////////////////////////////////////////
     const char_t* version() const override 
     {
-      return wtl::getValue<ENC>("v1.00", L"v1.00");
+      return wtl::choose<ENC>("v1.00", L"v1.00");
     }
 
     // ----------------------------------- MUTATOR METHODS ----------------------------------  

@@ -27,7 +27,7 @@ int32_t WINAPI _tWinMain(::HINSTANCE instance, ::HINSTANCE prevInstance, PWSTR c
   }
   catch (std::exception& e)
   {
-    wtl::cdebug << wtl::exception_log(HERE,e) << wtl::endl;
+    wtl::cdebug << wtl::caught_exception("An unhandled exception caused a terminal error", HERE, e);
     return -1;
   }
 }
