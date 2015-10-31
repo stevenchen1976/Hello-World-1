@@ -472,10 +472,10 @@ namespace hw1
       dc.setTextColour(wtl::Colour::White);
     
       // [TEXT] Draw sign text
-      dc.write(wtl::c_arr("Hi Mum! Hi Dad!" "\n\n" 
-                           "I love you"      "\n\n" 
-                           "Happy Easter!"   "\n\n"
-                           "From Nick"), signRect, wtl::DrawTextFlags::Centre); 
+      dc.write(wtl::c_str("Hi Mum! Hi Dad!" "\n\n" 
+                          "I love you"      "\n\n" 
+                          "Happy Easter!"   "\n\n"
+                          "From Nick"), signRect, wtl::DrawTextFlags::Centre); 
 
       // Cleanup
       dc.clear();
