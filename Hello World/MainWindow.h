@@ -8,23 +8,89 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include "wtl/WTL.hpp"                                          //!< Windows Template Library
-#include "wtl/utils/Random.hpp"                                 //!< wtl::Random
-#include "wtl/windows/WindowBase.hpp"                           //!< wtl::WindowBase
-#include "wtl/windows/controls/Button.hpp"                      //!< wtl::Button
-#include "wtl/windows/commands/NewDocumentCommand.hpp"          //!< wtl::NewDocumentCommand
-#include "wtl/windows/commands/OpenDocumentCommand.hpp"         //!< wtl::OpenDocumentCommand
-#include "wtl/windows/commands/SaveDocumentCommand.hpp"         //!< wtl::SaveDocumentCommand
-#include "wtl/windows/commands/CutClipboardCommand.hpp"         //!< wtl::CutClipboardCommand
-#include "wtl/windows/commands/CopyClipboardCommand.hpp"        //!< wtl::CopyClipboardCommand
-#include "wtl/windows/commands/PasteClipboardCommand.hpp"       //!< wtl::PasteClipboardCommand
-#include "wtl/windows/commands/AboutProgramCommand.hpp"         //!< wtl::AboutProgramCommand
-#include "wtl/windows/commands/ExitProgramCommand.hpp"          //!< wtl::ExitProgramCommand
+#include <wtl/WTL.hpp>                                          //!< Windows Template Library
+#include <wtl/utils/Random.hpp>                                 //!< wtl::Random
+#include <wtl/windows/WindowBase.hpp>                           //!< wtl::WindowBase
+#include <wtl/windows/controls/Button.hpp>                      //!< wtl::Button
+#include <wtl/windows/commands/NewDocumentCommand.hpp>          //!< wtl::NewDocumentCommand
+#include <wtl/windows/commands/OpenDocumentCommand.hpp>         //!< wtl::OpenDocumentCommand
+#include <wtl/windows/commands/SaveDocumentCommand.hpp>         //!< wtl::SaveDocumentCommand
+#include <wtl/windows/commands/CutClipboardCommand.hpp>         //!< wtl::CutClipboardCommand
+#include <wtl/windows/commands/CopyClipboardCommand.hpp>        //!< wtl::CopyClipboardCommand
+#include <wtl/windows/commands/PasteClipboardCommand.hpp>       //!< wtl::PasteClipboardCommand
+#include <wtl/windows/commands/AboutProgramCommand.hpp>         //!< wtl::AboutProgramCommand
+#include <wtl/windows/commands/ExitProgramCommand.hpp>          //!< wtl::ExitProgramCommand
 
 
 //! \namespace hw1 - Hello World v1 (Drawing demonstration)
 namespace hw1
 {
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //! \struct ExitButton - Defines the 'exit' button control
+  /////////////////////////////////////////////////////////////////////////////////////////
+  template <wtl::Encoding ENC>
+  struct ExitButton : wtl::Button<ENC>
+  {
+    // ---------------------------------- TYPES & CONSTANTS ---------------------------------
+  
+    //! \alias type - Define own type
+    using type = ExitButton;
+
+    //! \alias base - Define base type
+    using base = wtl::Button<ENC>;
+      
+    //! \var encoding - Inherit window character encoding
+    static constexpr wtl::Encoding  encoding = base::encoding;
+  
+    // ----------------------------------- REPRESENTATION -----------------------------------
+      
+    // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // ExitButton::ExitButton
+    //! Creates a standard button control
+    //! 
+    //! \param[in] instance - Owning instance
+    //! \param[in] id - Control ID
+    //! 
+    //! \throw platform_error - Unrecognised system window class
+    /////////////////////////////////////////////////////////////////////////////////////////
+    ExitButton(::HINSTANCE instance, wtl::WindowId id) : base(instance)
+    {
+      // Properties
+      this->Ident     = id;
+      this->Position  = wtl::PointL(500,50);
+      this->Style    |= wtl::WindowStyle::Visible;
+      this->Size      = wtl::SizeL(100,50);
+      this->Text      = wtl::c_str(L"Goodbye");
+        
+      // Events
+      this->Click += new wtl::ButtonClickEventHandler<encoding>(this, &ExitButton::onClick);
+    }
+      
+    // ----------------------------------- STATIC METHODS -----------------------------------
+
+    // ---------------------------------- ACCESSOR METHODS ----------------------------------
+
+    // ----------------------------------- MUTATOR METHODS ----------------------------------
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // ExitButton::onClick
+    //! Exits the program
+    //! 
+    //! \param[in] args - Message arguments
+    //! \return wtl::LResult - Message result and routing
+    ///////////////////////////////////////////////////////////////////////////////
+    wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding> args) 
+    { 
+      // Execute 'Exit Program' gui command
+      this->execute(wtl::CommandId::App_Exit);
+    
+      // Handled
+      return 0;     
+    }
+  };
+
   ///////////////////////////////////////////////////////////////////////////////
   //! \struct MainWindow - Main window class
   //! 
@@ -58,70 +124,9 @@ namespace hw1
       Goodbye = First+1,    //!< Exit button
     };
   
-    /////////////////////////////////////////////////////////////////////////////////////////
-    //! \struct ExitButton - Defines the 'exit' button control
-    /////////////////////////////////////////////////////////////////////////////////////////
-    struct ExitButton : wtl::Button<encoding>
-    {
-      // ---------------------------------- TYPES & CONSTANTS ---------------------------------
-  
-      //! \alias type - Define own type
-      using type = ExitButton;
-
-      //! \alias base - Define base type
-      using base = wtl::Button<encoding>;
-      
-      // ----------------------------------- REPRESENTATION -----------------------------------
-      
-      // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
-    
-      /////////////////////////////////////////////////////////////////////////////////////////
-      // ExitButton::ExitButton
-      //! Creates a standard button control
-      //! 
-      //! \param[in] instance - Owning instance
-      //! 
-      //! \throw platform_error - Unrecognised system window class
-      /////////////////////////////////////////////////////////////////////////////////////////
-      ExitButton(::HINSTANCE instance) : base(instance)
-      {
-        // Properties
-        this->Ident     = wtl::window_id(ControlId::Goodbye);
-        this->Position  = wtl::PointL(500,50);
-        this->Style    |= wtl::WindowStyle::Visible;
-        this->Size      = wtl::SizeL(100,50);
-        this->Text      = wtl::c_str(L"Goodbye");
-        
-        // Events
-        this->Click += new wtl::ButtonClickEventHandler<base::encoding>(this, &ExitButton::onClick);
-      }
-      
-      // ----------------------------------- STATIC METHODS -----------------------------------
-
-      // ---------------------------------- ACCESSOR METHODS ----------------------------------
-
-      // ----------------------------------- MUTATOR METHODS ----------------------------------
-
-      ///////////////////////////////////////////////////////////////////////////////
-      // ExitButton::onClick
-      //! Exits the program
-      //! 
-      //! \param[in] args - Message arguments
-      //! \return wtl::LResult - Message result and routing
-      ///////////////////////////////////////////////////////////////////////////////
-      wtl::LResult  onClick(wtl::ButtonClickEventArgs<encoding> args) 
-      { 
-        // Execute 'Exit Program' gui command
-        this->execute(wtl::CommandId::App_Exit);
-    
-        // Handled
-        return 0;     
-      }
-    };
-
     // ----------------------------------- REPRESENTATION -----------------------------------
   
-    ExitButton  GoodbyeBtn;    //!< 'Exit program' button 
+    ExitButton<encoding>  GoodbyeBtn;    //!< 'Exit program' button 
 
     // ------------------------------ CONSTRUCTION & DESTRUCTION ----------------------------
   
@@ -132,7 +137,7 @@ namespace hw1
     //! \param[in] instance - Module handle
     ///////////////////////////////////////////////////////////////////////////////
     MainWindow(::HINSTANCE instance) : base(getClass(instance)), 
-                                       GoodbyeBtn(instance)
+                                       GoodbyeBtn(instance, wtl::window_id(ControlId::Goodbye))
     {
       // Properties
       this->Size    = wtl::SizeL(640,480);
@@ -444,7 +449,7 @@ namespace hw1
     void  drawSign(wtl::DeviceContext& dc, wtl::PointL pt, bool erase)
     {
       // Large text
-      static const wtl::HFont largeFont = wtl::DeviceContext::ScreenDC.getFont(wtl::c_arr("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
+      static const wtl::HFont largeFont = wtl::DeviceContext::ScreenDC.getFont(wtl::c_str("MS Shell Dlg 2"), 16, wtl::FontWeight::Bold);
       dc += largeFont;
 
       // [SIGN] Black outline + brown interior
