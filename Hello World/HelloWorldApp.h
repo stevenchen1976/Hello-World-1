@@ -8,20 +8,23 @@
 #ifndef HELLO_WORLD_H
 #define HELLO_WORLD_H
 
-// Target Platform v5.01 (WindowsXP)
-//#include <WinSDKVer.h>
+//! \def _WIN32_WINNT - Define build target (Windows XP)
 #define _WIN32_WINNT    _WIN32_WINNT_WINXP
-//#include <SDKDDKVer.h>
 
-#include <wtl/WTL.hpp>                      //!< Windows Template Library
-#include <wtl/modules/Application.hpp>      //!< wtl::Application
-#include "MainWindow.h"                     //!< hw1::Mainwindow
+#include <wtl/WTL.hpp>                        //!< Windows Template Library
+#include <wtl/modules/Application.hpp>        //!< wtl::Application
+#include <wtl/windows/skins/ThemedSkin.hpp>   //!< wtl::ThemedSkin
+#include "MainWindow.h"                       //!< hw1::Mainwindow
 
-//using namespace wtl;
-
+///////////////////////////////////////////////////////////////////////////////
 //! \namespace hw1 - Hello World v1 (Drawing demonstration)
+///////////////////////////////////////////////////////////////////////////////
 namespace hw1
 {
+  ///////////////////////////////////////////////////////////////////////////////
+  //! \var encoding - Application character encoding  (Based on size of TCHAR)
+  ///////////////////////////////////////////////////////////////////////////////
+  constexpr wtl::Encoding encoding = wtl::default_encoding_t<::TCHAR>::value;
 
   ///////////////////////////////////////////////////////////////////////////////
   //! \struct HelloWorldApp - Encapsulates the 'Hello World' program
@@ -51,10 +54,27 @@ namespace hw1
     // HelloWorldApp::HelloWorldApp
     //! Create application from handle supplied by WinMain(..)
     //!
-    //! \param[in] app - Application handle
+    //! \param[in] app - Application instance
     ///////////////////////////////////////////////////////////////////////////////
     HelloWorldApp(::HMODULE app) : base(app)
     {
+      // Initialize default window skin
+      wtl::ThemedSkin<encoding>::get();
+
+      // Register main window class
+      MainWindow<encoding>::registerClass(app);
+
+      //! Populate the program GUI commands  ['File' command grouping]
+      MainWindow<encoding>::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::File, 
+      { 
+        new wtl::ExitProgramCommand<encoding>(this->window()) 
+      });
+      
+      //! Populate the program GUI commands  ['Help' command grouping]
+      MainWindow<encoding>::CommandGroups += new wtl::CommandGroup<encoding>(wtl::CommandGroupId::Help, 
+      { 
+        new wtl::AboutProgramCommand<encoding>(this->window()) 
+      });
     }
 
     // ---------------------------------- ACCESSOR METHODS ----------------------------------
@@ -63,26 +83,26 @@ namespace hw1
     // HelloWorldApp::name const 
     //! Get the application name
     //!
-    //! \return const char_t* - Full application name
+    //! \return String<encoding> - Full application name
     /////////////////////////////////////////////////////////////////////////////////////////
-    const char_t* name() const override
+    wtl::String<encoding> name() const override
     {
-      return wtl::choose<ENC>("Hello World 1", L"Hello World 1");
+      return "Hello World 1";
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////
     // HelloWorldApp::version const 
     //! Get the application version
     //!
-    //! \return const char_t* - Version string
+    //! \return String<encoding> - Version string
     /////////////////////////////////////////////////////////////////////////////////////////
-    const char_t* version() const override 
+    wtl::String<encoding> version() const override 
     {
-      return wtl::choose<ENC>("v1.00", L"v1.00");
+      return "v1.00";
     }
 
     // ----------------------------------- MUTATOR METHODS ----------------------------------  
-  protected:
+  private:
     ///////////////////////////////////////////////////////////////////////////////
     // HelloWorldApp::onStart
     //! Called once upon startup to create the main window
@@ -94,19 +114,20 @@ namespace hw1
     void onStart(wtl::ShowWindowFlags mode) override
     {
       // Create window
-      this->Window.create();
+      this->window().create();
     
       // Show window
-      this->Window.show(mode);
-      this->Window.update();
+      this->window().show(mode);
+      this->window().update();
     }
 
     // ----------------------------------- REPRESENTATION -----------------------------------
   };
 
-
+  ///////////////////////////////////////////////////////////////////////////////
   //! \alias application_t - Define ANSI/UNICODE application type according to build settings (Size of TCHAR)
-  using application_t = HelloWorldApp<wtl::default_encoding_t<::TCHAR>::value>;
+  ///////////////////////////////////////////////////////////////////////////////
+  using application_t = HelloWorldApp<encoding>;
 
 } // namespace
 

@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|MinGW">
+    <ProjectConfiguration Include="Debug|TDM-Mingw32">
       <Configuration>Debug</Configuration>
-      <Platform>MinGW</Platform>
+      <Platform>TDM-Mingw32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|MinGW">
+    <ProjectConfiguration Include="Release|TDM-Mingw32">
       <Configuration>Release</Configuration>
-      <Platform>MinGW</Platform>
+      <Platform>TDM-Mingw32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -22,6 +22,7 @@
     <ProjectGuid>{A07FC621-3C9F-4B03-9074-07EF90110B6A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>HelloWorld</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -37,11 +38,11 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">
-    <PlatformToolset>Clang</PlatformToolset>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|TDM-Mingw32'">
+    <PlatformToolset>GCC_v5.2</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|MinGW'">
-    <PlatformToolset>Clang</PlatformToolset>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|TDM-Mingw32'">
+    <PlatformToolset>GCC_v5.2</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -55,20 +56,33 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\My Projects\WTL\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\My Projects\WTL\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\WTL;$(WindowsSdk_71A_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\WTL\$(Configuration)\$(Platform);$(WindowsSdk_71A_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\My Projects\WTL\;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\My Projects\WTL\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\WTL;$(WindowsSdk_71A_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\WTL\$(Configuration)\$(Platform);$(WindowsSdk_71A_LibraryPath_x86);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">
-    <MinGWInstallFolder>f:\MinGW</MinGWInstallFolder>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TDM-Mingw32'">
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\</IntDir>
+    <IncludePath>$(SolutionDir)..\WTL;$(MingIncludePath);$(StdLibIncludePath);$(WinApiIncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\WTL\$(Configuration)\$(Platform);$(StdLibLibraryPath);$(WinApiLibraryPath);$(LibraryPath)</LibraryPath>
+    <MinGWInstallFolder>D:\TDM-GCC-64</MinGWInstallFolder>
     <LLVMInstallFolder>d:\LLVM</LLVMInstallFolder>
-    <StdIncludeFolder>f:\MinGW\include\C++</StdIncludeFolder>
-    <LibraryPath>f:\MinGW\lib;D:\My Projects\WTL\MinGW\Debug</LibraryPath>
-    <ExecutablePath>f:\MinGW\bin;D:\LLVM\bin;$(MSBuild_ExecutablePath);$(PATH);D:\MSVC2015\VC\bin;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\bin</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|TDM-Mingw32'">
+    <OutDir>$(SolutionDir)$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(Configuration)\$(Platform)\</IntDir>
+    <IncludePath>$(SolutionDir)..\WTL;$(MingIncludePath);$(StdLibIncludePath);$(WinApiIncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\WTL\$(Configuration)\$(Platform);$(StdLibLibraryPath);$(WinApiLibraryPath);$(LibraryPath)</LibraryPath>
+    <MinGWInstallFolder>D:\TDM-GCC-64</MinGWInstallFolder>
+    <LLVMInstallFolder>d:\LLVM</LLVMInstallFolder>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,49 +118,34 @@
       <AdditionalDependencies>shlwapi.lib;WTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|TDM-Mingw32'">
     <Link>
-      <AdditionalDependencies>D:\My Projects\WTL\MinGW\Debug\libWTL.a</AdditionalDependencies>
-      <AdditionalOptions>-fno-use-linker-plugin %(AdditionalOptions)</AdditionalOptions>
-      <LibraryDependencies />
-      <SharedLibrarySearchPath>$(MinGWInstallFolder)\lib\x86</SharedLibrarySearchPath>
-      <AdditionalLibraryDirectories>$(MinGWInstallFolder)\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libWTL.a;Uxtheme.a;Shlwapi.a</AdditionalDependencies>
       <ThreadSupport>false</ThreadSupport>
-      <Win32Build>false</Win32Build>
     </Link>
     <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <CppLanguageStandard>c++1y</CppLanguageStandard>
-      <ExceptionHandling>Enabled</ExceptionHandling>
-      <DebugInformationFormat>DWARF2</DebugInformationFormat>
-      <AdditionalOptions>-D _UNICODE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>D:\My Projects\WTL</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>D:\My Projects\WTL;f:\MinGW\include</AdditionalIncludeDirectories>
-      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
-      <PreprocessorDefinitions>UNICODE;_UNICODE</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-      <ShowProgress>true</ShowProgress>
-    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|TDM-Mingw32'">
+    <Link>
+      <AdditionalDependencies>libWTL.a;Uxtheme.a;Shlwapi.a</AdditionalDependencies>
+      <ThreadSupport>false</ThreadSupport>
+    </Link>
+    <ClCompile>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BuildTarget.h" />
     <ClInclude Include="HelloWorldApp.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="HelloWorld.rc">
-      <ResourceOutputFileName Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">$(IntDir)%(Filename).o</ResourceOutputFileName>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'"> --use-temp-file -c 1251 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|MinGW'">d:\MYPROJ~1\WTL;f:\MinGW\include</AdditionalIncludeDirectories>
-    </ResourceCompile>
+    <ResourceCompile Include="HelloWorld.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
