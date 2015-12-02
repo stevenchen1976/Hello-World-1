@@ -49,6 +49,8 @@ END
 // Icon Resources
 //
 
+APP_ICON          ICON    "res\\Program.ico"
+
 ID_APP_EXIT       ICON    "res\\Command - AppExit.ico"
 ID_APP_ABOUT      ICON    "res\\Command - Help.ico"
 

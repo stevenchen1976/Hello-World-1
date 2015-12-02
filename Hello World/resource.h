@@ -4,6 +4,8 @@
 //
 #include "wtl/Resource.h"
 
+#define APP_ICON      100
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
