@@ -23,11 +23,11 @@ int32_t WINAPI _tWinMain(::HINSTANCE instance, ::HINSTANCE prevInstance, PWSTR c
     hw1::application_t program(instance);
   
     // Run program and return result
-    return program.run(cmdLine, static_cast<wtl::ShowWindowFlags>(showMode));
+    return program.run(cmdLine, wtl::enum_cast<wtl::ShowWindowFlags>(showMode));
   }
   catch (std::exception& e)
   {
-    wtl::cdebug << wtl::caught_exception("An unhandled exception caused a terminal error", HERE, e);
+    wtl::errorBox<hw1::encoding>(NULL, wtl::caught_exception("An unhandled exception caused a terminal error", HERE, e));
     return -1;
   }
 }
